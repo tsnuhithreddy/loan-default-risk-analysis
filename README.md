@@ -27,3 +27,14 @@ Financial institutions lose significant revenue due to loan defaults. The object
 - Power BI
 - Git & GitHub
 
+## Project Workflow
+
+The project follows a structured workflow to analyze loan default risk and generate business insights:
+
+1. Data Collection
+2. Data Cleaning
+3. Exploratory Data Analysis (EDA)
+4. SQL Analysis
+5. Power BI Dashboard Development
+6. Business Insights and Recommendations
+7. Executive Report
