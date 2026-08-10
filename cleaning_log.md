@@ -26,3 +26,10 @@ Duplicate rows 0
 
 Data cleaning completed successfully.
 Dataset is ready for SQL analysis and Power BI dashboard development.
+
+## EDA columns created (not saved to CSV — analysis only)
+
+- dti_tier: DTI risk classification (Low/Medium/High/Critical)
+- income_band: Income band classification (Low/Medium/High/Very High)
+- age_group: Age group classification (Young/Early Career/Mid Career/Senior)
+- risk_flag: Composite risk flag (High Risk / Normal)
