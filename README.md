@@ -95,35 +95,36 @@ Phase 9 → Executive Summary (CEO-level briefing)
 
 ## Repository Structure
 
+
+```text
 loan-default-risk-analysis/
 │
 ├── data/
-│ ├── raw/
-│ │ └── credit_risk_dataset.csv # Original dataset
-│ └── cleaned/
-│ └── credit_risk_cleaned.csv # Cleaned — 32,416 rows
+│   ├── raw/
+│   │   └── credit_risk_dataset.csv          # Original dataset
+│   └── cleaned/
+│       └── credit_risk_cleaned.csv          # Cleaned — 32,416 rows
 │
 ├── notebooks/
-│ └── Loan_default_risk_analysis.ipynb # Full analysis notebook
+│   └── Loan_default_risk_analysis.ipynb     # Full analysis notebook
 │
 ├── sql/
-│ ├── setup.sql # Database setup
-│ ├── reference_tables.sql # Risk scoring tables
-│ └── queries.sql # 26 business queries
+│   ├── setup.sql                            # Database setup
+│   ├── reference_tables.sql                 # Risk scoring tables
+│   └── queries.sql                          # 26 business queries
 │
 ├── dashboard/
-│ ├── FinTrust_LoanDefaultRisk_Dashboard.pbix
-│ └── screenshots/ # All chart and dashboard images
+│   ├── FinTrust_LoanDefaultRisk_Dashboard.pbix
+│   └── screenshots/                         # All chart and dashboard images
 │
 ├── reports/
-│ ├── sql_findings.md # 10 SQL findings
-│ ├── eda_findings.md # 10 EDA findings
-│ ├── business_insights.md # 8 executive insights
-│ └── executive_summary.md # CEO briefing
+│   ├── sql_findings.md                      # 10 SQL findings
+│   ├── eda_findings.md                      # 10 EDA findings
+│   ├── business_insights.md                 # 8 executive insights
+│   └── executive_summary.md                 # CEO briefing
 │
-└── cleaning_log.md # Cleaning decisions log
-
----
+└── cleaning_log.md                          # Cleaning decisions log
+```
 
 ## Dataset
 
