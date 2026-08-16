@@ -12,7 +12,7 @@ business tens of millions of dollars annually.
 
 An analysis of 32,416 historical loan records reveals that 1 in every 
 5 loans approved ends in default. The current default rate of 21.87% is 
-4 to 7 times higher than the industry average of 3 to 5%. More critically, 
+4 to 6 times higher than the NBFC sector's gross NPA range of 3.6%–5.4%.* More critically,
 the interest revenue generated from loans that are repaid — $25 million — 
 does not come close to covering the $77 million lost on loans that default. 
 FinTrust's net portfolio position is negative $51.96 million.
@@ -71,7 +71,7 @@ repriced.
 | Total loans analysed | 32,416 |
 | Total defaulted loans | 7,089 |
 | Overall default rate | 21.87% |
-| Industry average default rate | 3–5% |
+| NBFC sector gross NPA (benchmark)* | 3.6%–5.4% |
 | Total interest revenue (repaid loans) | $25 million |
 | Total principal lost (defaulted loans) | $77 million |
 | **Net portfolio position** | **-$51.96 million** |
@@ -187,5 +187,9 @@ The choice is clear.
 *This analysis is based on 32,416 historical loan records. 
 All financial figures are derived from loan principal amounts 
 and stated interest rates. Recovery rates assumed at zero 
-(conservative estimate). Industry benchmarks sourced from 
-NBFC sector averages.*
+(conservative estimate). Industry benchmark: NBFC sector gross NPA 
+of 3.6%–5.4%, sourced from CareEdge Ratings' NBFC-Microfinance 
+Industry Report (2025) and ICRA (2021). Note: GNPA (90+ days 
+past due) is a different metric from this dataset's default flag 
+(a completed default outcome), so the comparison is directional, 
+not a precise like-for-like benchmark.*
