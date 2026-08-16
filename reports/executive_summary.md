@@ -114,6 +114,12 @@ high-risk borrowers who default at 44.5% from normal borrowers who default
 at 15.4%. Routing all flagged applications to manual review rather than 
 auto-approval is projected to reduce portfolio losses by $20 to $25 million.
 
+**Operational requirement:** Implementing mandatory manual review for all 
+flagged applications requires an estimated 2 additional credit officer FTEs 
+(assuming ~602 flagged applications/month and a 20-minute review per 
+application). This should be budgeted alongside the projected $20–25M loss 
+reduction as the cost side of this recommendation.
+
 **Action 6 — Review Grade D lending volume and limits.**
 Grade D is the single largest source of default losses in absolute dollars 
 at $23 million — not because of the highest default rate, but because of 
