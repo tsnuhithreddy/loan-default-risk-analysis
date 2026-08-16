@@ -2,7 +2,7 @@ Insight 1 — The Portfolio is in a Structural Crisis
 Observation:
 FinTrust's overall default rate stands at 21.87% — nearly one in four loans approved ends in default.
 Evidence:
-Of 32,416 loans analysed, 7,089 have defaulted representing a total principal loss exposure of $77 million. The industry benchmark default rate for NBFCs and retail lenders is 3–5%. FinTrust is operating at 4–7x the industry average.
+Of 32,416 loans analysed, 7,089 have defaulted representing a total principal loss exposure of $77 million. NBFC sector gross NPA has ranged 3.6%–5.4% in recent periods (CareEdge Ratings, NBFC-Microfinance Industry Report, 2025). FinTrust is operating at 4–6x this range. Note: GNPA measures 90+ day delinquency, while loan_status here reflects a completed default outcome, so this comparison is directional rather than a precise like-for-like benchmark.
 Business Impact:
 At the current default rate FinTrust's interest revenue of $25 million from repaid loans is completely overwhelmed by $77 million in default losses — producing a net portfolio position of negative $51.96 million. The business is not merely underperforming — it is destroying capital on every cohort of loans approved.
 Recommendation:
