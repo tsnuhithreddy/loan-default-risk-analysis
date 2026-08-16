@@ -2,7 +2,7 @@
 
 > **Simulating real credit risk analytics for FinTrust Lending Co. — 
 > a mid-size NBFC experiencing a 21.87% loan default rate, 
-> 4x the industry average.**
+> 4 to 6x the NBFC sector average.**
 
 ---
 
@@ -203,6 +203,11 @@ Full log: [cleaning_log.md](cleaning_log.md)
 
 Full report: [reports/executive_summary.md](reports/executive_summary.md)
 
+**Compliance note:** Any hard cutoffs based on the criteria above (grade, 
+DTI, prior default) should be reviewed against fair-lending regulations 
+before implementation, since risk variables can correlate with protected 
+characteristics even when not directly using them.
+
 ---
 
 ## Limitations of This Analysis
@@ -217,6 +222,23 @@ Full report: [reports/executive_summary.md](reports/executive_summary.md)
 - **Self-reported income**, with no independent verification field.
 - **Single dataset source** (Kaggle, CC0). Findings should be validated 
   against FinTrust's real portfolio before any policy change is implemented.
+
+  ---
+
+  ## What I'd Analyze With More Data
+
+- **Time-series default drift** — if loan origination date were available, 
+  track whether default rates are worsening or improving by cohort.
+- **Macro overlay** — unemployment rate, interest rate environment, or 
+  regional economic indicators at time of origination.
+- **Bureau score** (if available) alongside internal grade, to test whether 
+  FinTrust's grading model adds predictive power beyond a raw credit score.
+- **Recovery/collections data** — this analysis assumes 0% recovery on 
+  defaults (stated as a conservative assumption); real LGD (loss given 
+  default) is rarely 100%, and modeling recovery would materially change 
+  the net loss figures.
+
+  ---
 
 ## About
 
