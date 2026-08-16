@@ -205,6 +205,19 @@ Full report: [reports/executive_summary.md](reports/executive_summary.md)
 
 ---
 
+## Limitations of This Analysis
+
+- **No loan-vintage or date field.** The dataset is a single snapshot, so no 
+  trend, seasonality, or cohort drift analysis was possible. All findings 
+  describe the historical portfolio as a whole, not how risk is evolving.
+- **No loan-term field.** Interest revenue is calculated as one year of 
+  simple interest (loan_amnt × rate), not total revenue over the life of 
+  the loan. This is a conservative, first-year view — see the Methodology 
+  note in the financial analysis section.
+- **Self-reported income**, with no independent verification field.
+- **Single dataset source** (Kaggle, CC0). Findings should be validated 
+  against FinTrust's real portfolio before any policy change is implemented.
+
 ## About
 
 **Analyst:** Telukala Snuhith Reddy  
