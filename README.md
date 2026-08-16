@@ -10,7 +10,7 @@
 
 FinTrust Lending Co. is losing money on nearly 1 in 5 loans approved.
 
-- Default rate: **21.87%** vs industry average of **3–5%**
+- Default rate: **21.87%** vs NBFC sector gross NPA of **3.6%–5.4%***
 - Total defaults: **7,089 loans** out of 32,416
 - Interest revenue from repaid loans: **$25M**
 - Principal lost on defaulted loans: **$77M**
