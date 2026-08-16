@@ -123,6 +123,23 @@ $15,000 would meaningfully reduce this exposure.
 
 ---
 
+## Trade-Offs Considered
+
+Every recommendation in this report has a cost as well as a benefit. Below is 
+the net financial impact of each major action, accounting for the interest 
+revenue given up by declining loans that would otherwise have repaid.
+
+| Action | Revenue Forgone | Loss Avoided | Net Benefit |
+|----------|----------|---------|----------|
+| Suspend Grade G approvals | $307 | $1,098,925 | +$1,098,618 |
+| Suspend Grade F approvals | $195,206 | $2,496,875 | +$2,301,669 |
+| Enforce 35% DTI hard ceiling | $1,222,679 | $24,958,475 | +$23,735,796 |
+
+In all three cases the loss avoided is one to two orders of magnitude larger 
+than the revenue forgone — meaning these recommendations hold up even after 
+accounting for their opportunity cost, not just their headline loss-avoidance 
+figure.
+
 ## Projected Impact of Recommended Actions
 
 If all six actions are implemented:
