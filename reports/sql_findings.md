@@ -20,9 +20,9 @@ Finding 4 — DTI ratio is a reliable default predictor
 Borrowers in the Critical DTI tier (loan_percent_income above 0.50) default at significantly higher rates than Low DTI borrowers. The industry standard threshold of 35% DTI appears to be correctly placed — default rates jump meaningfully above this level.
 Business implication: FinTrust's existing 35% DTI threshold is validated by the data. The recommendation is to enforce it more strictly rather than approve exceptions above it.
 
-Finding 5 — Young borrowers carry disproportionate risk
-Borrowers under 25 (Young segment) show the highest default rate among age groups. This makes intuitive sense — shorter employment history, lower income stability, less financial experience.
-Business implication: Loan applications from borrowers under 25 should require higher minimum grades (B or above) and stricter DTI limits than older borrower segments.
+Finding 5 — Default risk is U-shaped by age, not linear
+Default rate does not decline steadily with age. Senior borrowers (50+) show the highest default rate (25.3%), with Young borrowers under 25 close behind (23.1%) — both above the 21.9% portfolio average. Borrowers aged 25–50 default least often (20.6–20.7%).
+Business implication: Extra scrutiny should apply to both ends of the age range, not just applicants under 25. Loan applications from borrowers under 25 or over 50 should require higher minimum grades (B or above) and stricter DTI limits than the 25–50 segment.
 
 Finding 6 — Renters default more than homeowners
 RENT shows the highest default rate among home ownership categories. OWN shows the lowest. This aligns with financial theory — homeowners have a tangible asset and typically more financial stability.
