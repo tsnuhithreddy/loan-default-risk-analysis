@@ -8,9 +8,9 @@
 
 ## The Business Problem
 
-FinTrust Lending Co. is losing money on nearly 1 in 5 loans approved.
+FinTrust Lending Co. is losing money on more than 1 in 5 loans in the analyzed portfolio defaulted.
 
-- Default rate: **21.87%** vs NBFC sector gross NPA of **3.6%–5.4%***
+- Default rate: The portfolio's observed default rate is 21.87%. External industry credit-quality metrics are provided only as contextual benchmarks because definitions and measurement periods may differ.
 - Total defaults: **7,089 loans** out of 32,416
 - Interest revenue from repaid loans: **$25M**
 - Principal lost on defaulted loans: **$77M**
@@ -23,16 +23,18 @@ to prevent it.
 
 ## Project Phases
 
-Phase 1 → Business Understanding & Stakeholder Requirements
-Phase 2 → Dataset Selection & Evaluation
-Phase 3 → Data Dictionary & Column Analysis
-Phase 4 → Data Cleaning (7 steps, documented)
-Phase 5 → SQL Analysis (26 business queries)
-Phase 6 → Python EDA (10 business-driven visualisations)
-Phase 7 → Power BI Dashboard (3 interactive pages)
-Phase 8 → Business Insights (8 executive findings)
-Phase 9 → Executive Summary (CEO-level briefing)
+## Project Workflow
 
+1. **Data Validation & Understanding**
+2. **Data Cleaning & Preparation**
+3. **SQL Business Analysis**
+4. **Python Exploratory Data Analysis**
+5. **Risk Driver Analysis**
+6. **Statistical Validation**
+7. **Financial Impact Analysis**
+8. **Power BI Dashboard Development**
+9. **Business Recommendations**
+10. **Limitations & Responsible Interpretation**
 ---
 
 ## Key Findings
@@ -45,10 +47,20 @@ Phase 9 → Executive Summary (CEO-level briefing)
 | 4 | DTI above 35% sharply increases default | 69.87% in High tier | Hard ceiling enforcement |
 | 5 | Grade D causes largest absolute loss | $23M exposure | Volume cap required |
 | 6 | Grades F and G are loss-making | $0.2M revenue vs $3.6M loss | Discontinue or reprice |
-| 7 | Early Warning System validated | 44.5% vs 15.4% default rate | Operationalise immediately |
+| 7 | Early Warning System validated | 44.5% vs 15.4% default rate | Use the composite risk flag as an analytical early-warning indicator and validate it on unseen data before considering production deployment. |
 | 8 | Net portfolio position is -$51.96M | $25M revenue vs $77M loss | Immediate policy reform |
 
 ---
+
+## Statistical Validation
+
+The composite risk flag was evaluated using a two-proportion z-test comparing observed default rates between flagged and non-flagged borrowers.
+
+The analysis also includes a confidence interval for the difference in default proportions.
+
+The statistical results provide evidence that the observed default-rate difference between the two groups is unlikely to be explained by random sampling variation alone within this dataset.
+
+However, this analysis is not equivalent to out-of-sample predictive-model validation. Before production deployment, the risk flag would require testing on unseen data, threshold optimization, stability monitoring, and fairness assessment.
 
 ## Dashboard
 
@@ -187,9 +199,9 @@ Full log: [cleaning_log.md](cleaning_log.md)
 ## Business Recommendations
 
 **Immediate actions:**
-- Suspend all Grade G loan approvals — 98.44% default rate
+- **Grade G:** Shows extremely elevated observed default risk. Apply enhanced underwriting, affordability verification, and review of lending policy for this segment rather than automatically rejecting all applications.
 - Treat prior default flag as automatic escalation trigger
-- Enforce 35% DTI as hard ceiling — no exceptions below board level
+- **High DTI:** Apply enhanced affordability review above the 35% DTI threshold and evaluate appropriate exposure limits or policy exceptions.
 
 **30-day actions:**
 - Apply intent-specific approval criteria for Debt Consolidation
@@ -199,7 +211,7 @@ Full log: [cleaning_log.md](cleaning_log.md)
 - Cap Grade D volume at 15% of monthly approvals
 - Review Grade F pricing — currently loss-making
 
-**Projected impact:** $25–30M reduction in annual default losses
+****Potential impact:** Reducing exposure to high-risk borrower segments could materially reduce portfolio losses. The actual financial impact would require portfolio-level simulation and out-of-sample validation. impact:** $25–30M reduction in annual default losses
 
 Full report: [reports/executive_summary.md](reports/executive_summary.md)
 
