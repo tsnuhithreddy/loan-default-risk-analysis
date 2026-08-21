@@ -11,7 +11,7 @@ USE fintrust_lending;
 select count(*) as total_loans,
 sum(loan_status) as total_defaults,
 count(*)-sum(loan_status) as total_non_defaults,
-round((sum(loan_status)/count(*))*100,2) as default_rate_pct
+round(avg(loan_status)*100,2) as default_rate_pct
 from credit_risk;
 
 -- Q2: Default rate by loan grade
@@ -106,14 +106,10 @@ order by default_rate desc;
 
 -- Q10: Composite risk flag
 -- Business question: How many borrowers meet FinTrust's high-risk criteria and what is their default rate?
-select
-case
-when loan_grade in ('E','F','G') or loan_percent_income>0.40 or cb_person_default_on_file='Y' then 'High Risk'
-else 'Normal Borrowers'
-end as risk_flag,
+select risk_flag,
 count(*) as total_borrowers,sum(loan_status) as total_defaults,
 round(avg(loan_status)*100,2) as default_rate
-from credit_risk
+from risk_flagged_loans
 group by risk_flag
 order by default_rate DESC;
 
@@ -190,13 +186,21 @@ order by defaulted_amount desc;
 
 -- Q15: Prior default impact
 -- Business question: How much more likely is a borrower with a prior default to default again with FinTrust?
-select cb_person_default_on_file,count(*) as total_loans,round(avg(loan_status)*100,2) as default_rate,
-case
-when cb_person_default_on_file='Y' then round(avg(loan_status)*100/(select avg(loan_status)*100 from credit_risk where cb_person_default_on_file='N'),2)
-else 1.00
-end as times_more_likely
-from credit_risk
-group by cb_person_default_on_file;
+with default_by_prior as (
+    select cb_person_default_on_file, count(*) as total_loans,
+           round(avg(loan_status)*100, 2) as default_rate
+    from credit_risk
+    group by cb_person_default_on_file
+),
+baseline as (
+    select default_rate as baseline_rate from default_by_prior
+    where cb_person_default_on_file = 'N'
+)
+select d.cb_person_default_on_file, d.total_loans, d.default_rate,
+       round(d.default_rate / b.baseline_rate, 2) as times_more_likely
+from default_by_prior d
+cross join baseline b
+order by d.cb_person_default_on_file;
 
 -- Q16: CTE — default rate by grade with ranking
 -- Business question: Which grade ranks as the single highest default risk in FinTrust's portfolio?
@@ -346,3 +350,21 @@ from grade_with_tier g join loan_grade_reference l
 on g.loan_grade=l.grade
 join risk_scoring_matrix r on g.risk_tier=r.risk_tier
 order by g.default_percentage desc;
+
+-- Q27: Grade x DTI interaction
+select loan_grade,
+case
+when loan_percent_income<0.20 then 'Low DTI'
+when loan_percent_income<0.35 then 'Medium DTI'
+else 'High DTI (35%+)'
+end as dti_tier,
+count(*) as total_loans, round(avg(loan_status)*100,2) as default_rate
+from credit_risk
+group by loan_grade, dti_tier
+having count(*)>=30
+order by loan_grade, dti_tier;
+
+-- Q28: Pipeline validation checksum — expect 32416 rows, 21.87%, $310,994,100, 7 grades
+select count(*) as row_count, round(avg(loan_status)*100,2) as default_rate_pct,
+sum(loan_amnt) as total_loan_volume, count(distinct loan_grade) as distinct_grades
+from credit_risk;
