@@ -43,3 +43,7 @@ SELECT *
 FROM credit_risk
 LIMIT 10;
 
+CREATE INDEX idx_loan_grade ON credit_risk (loan_grade);
+CREATE INDEX idx_default_on_file ON credit_risk (cb_person_default_on_file);
+CREATE INDEX idx_loan_percent_income ON credit_risk (loan_percent_income);
+CREATE INDEX idx_grade_default ON credit_risk (loan_grade, cb_person_default_on_file);
