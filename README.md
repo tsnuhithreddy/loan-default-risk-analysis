@@ -133,6 +133,7 @@ loan-default-risk-analysis/
 │   ├── eda_findings.md                      # 10 EDA findings
 │   ├── business_insights.md                 # 8 executive insights
 │   └── executive_summary.md                 # CEO briefing
+│   └── statistical_findings.md              # Chi-square + z-test validation
 │
 └── cleaning_log.md                          # Cleaning decisions log
 ```
