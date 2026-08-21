@@ -8,7 +8,7 @@
 
 ## The Business Problem
 
-FinTrust Lending Co. is losing money on more than 1 in 5 loans in the analyzed portfolio defaulted.
+FinTrust Lending Co. is losing money — more than 1 in 5 loans in the analyzed portfolio defaulted.
 
 - Default rate: The portfolio's observed default rate is 21.87%. External industry credit-quality metrics are provided only as contextual benchmarks because definitions and measurement periods may differ.
 - Total defaults: **7,089 loans** out of 32,416
@@ -20,8 +20,6 @@ As the analyst, I was hired to find out why — and build a system
 to prevent it.
 
 ---
-
-## Project Phases
 
 ## Project Workflow
 
@@ -44,7 +42,7 @@ to prevent it.
 | 1 | Grade G loans are near-certain losses | 98.44% default rate | Suspend immediately |
 | 2 | Prior defaulters 2x more likely to default again | 37.87% vs 18.43% | Mandatory review trigger |
 | 3 | Debt Consolidation highest risk intent | 28.68% default rate | Stricter approval criteria |
-| 4 | DTI above 35% sharply increases default | 69.87% in High tier | Hard ceiling enforcement |
+| 4 | DTI above 35% sharply increases default | 71.96% vs 18.28% below threshold (z-test validated) | Hard ceiling enforcement |
 | 5 | Grade D causes largest absolute loss | $23M exposure | Volume cap required |
 | 6 | Grades F and G are loss-making | $0.2M revenue vs $3.6M loss | Discontinue or reprice |
 | 7 | Early Warning System validated | 44.5% vs 15.4% default rate | Use the composite risk flag as an analytical early-warning indicator and validate it on unseen data before considering production deployment. |
@@ -211,7 +209,7 @@ Full log: [cleaning_log.md](cleaning_log.md)
 - Cap Grade D volume at 15% of monthly approvals
 - Review Grade F pricing — currently loss-making
 
-****Potential impact:** Reducing exposure to high-risk borrower segments could materially reduce portfolio losses. The actual financial impact would require portfolio-level simulation and out-of-sample validation. impact:** $25–30M reduction in annual default losses
+**Potential impact:** Reducing exposure to high-risk borrower segments could materially reduce portfolio losses — directionally estimated at $25–30M in annual default losses, though the actual figure would require portfolio-level simulation and out-of-sample validation.
 
 Full report: [reports/executive_summary.md](reports/executive_summary.md)
 
