@@ -60,6 +60,7 @@ The statistical results provide evidence that the observed default-rate differen
 
 However, this analysis is not equivalent to out-of-sample predictive-model validation. Before production deployment, the risk flag would require testing on unseen data, threshold optimization, stability monitoring, and fairness assessment.
 
+Full statistical results: [reports/statistical_findings.md](reports/statistical_findings.md)
 ## Dashboard
 
 3-page interactive Power BI dashboard built for the CRO.
