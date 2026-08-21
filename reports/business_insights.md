@@ -12,7 +12,7 @@ Insight 2 — Grade G and F Loans Should Be Discontinued Immediately
 Observation:
 Grade G loans default at 98.44% and Grade F loans default at 70.54% — both far exceeding any threshold where lending remains rational.
 Evidence:
-Grade G generates $0.0M in interest revenue against $1.1M in default losses. Grade F generates $0.2M in revenue against $2.5M in losses. Both grades are deeply loss-making — every rupee lent at these grades produces a net loss after accounting for defaults.
+Grade G generates $0.0M in interest revenue against $1.1M in default losses. Grade F generates $0.2M in revenue against $2.5M in losses. Both grades are deeply loss-making — every dollar lent at these grades produces a net loss after accounting for defaults.
 Business Impact:
 Continuing to approve Grade F and G loans costs FinTrust approximately $3.6M in net losses from these two grades alone. Since loan grade is assigned before approval, this loss is entirely preventable. There is no risk-adjusted case for approving Grade G loans — the expected loss exceeds the expected revenue by an order of magnitude.
 Recommendation:
