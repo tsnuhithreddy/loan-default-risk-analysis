@@ -9,7 +9,7 @@
 
 - Removed duplicate records
 - Handled missing values
-- Created `is_unemployed' feature
+- Created `is_unemployed` feature
 - Corrected unrealistic employment length values
 - Capped unrealistic age values
 - Verified data types
