@@ -150,6 +150,8 @@ loan-default-risk-analysis/
 | Target variable | loan_status (1 = default, 0 = repaid) |
 | Default rate | 21.87% |
 
+Note: this dataset (CC0) and this project's own code (MIT, see `LICENSE`) are covered by two separate licenses.
+
 ---
 
 ## SQL Analysis Highlights
