@@ -21,7 +21,7 @@ Borrowers in the Critical DTI tier (loan_percent_income above 0.50) default at s
 Business implication: FinTrust's existing 35% DTI threshold is validated by the data. The recommendation is to enforce it more strictly rather than approve exceptions above it.
 
 Finding 5 — Default risk is U-shaped by age, not linear
-Default rate does not decline steadily with age. Senior borrowers (50+) show the highest default rate (25.3%), with Young borrowers under 25 close behind (23.1%) — both above the 21.9% portfolio average. Borrowers aged 25–50 default least often (20.6–20.7%).
+Default rate does not decline steadily with age. Senior borrowers (50+) show the highest default rate (25.35%), with Young borrowers under 25 close behind (23.34%) — both above the 21.9% portfolio average. Borrowers aged 25–50 default least often (20.55–20.98%).
 Business implication: Extra scrutiny should apply to both ends of the age range, not just applicants under 25. Loan applications from borrowers under 25 or over 50 should require higher minimum grades (B or above) and stricter DTI limits than the 25–50 segment.
 
 Finding 6 — Renters default more than homeowners
