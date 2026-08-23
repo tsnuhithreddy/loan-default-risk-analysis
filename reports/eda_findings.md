@@ -36,7 +36,7 @@ The analysis indicates that interest revenue from repaid **Grade F and Grade G l
 
 ### Finding 9 — Default risk is U-shaped by age, not linear
 
-Default risk does not decrease steadily with age. **Senior borrowers (50+) show the highest observed default rate (25.3%)**, followed closely by **Young borrowers under 25 (23.1%)** — both segments sit above the portfolio average of 21.9%. Borrowers aged 25–50 default least frequently, at 20.6–20.7%. This suggests distinct risk drivers at each end of the age range: limited credit history for younger borrowers, and potentially fixed or declining income for older borrowers.
+Default risk does not decrease steadily with age.**Senior borrowers (50+) show the highest observed default rate (25.35%)**, followed closely by **Young borrowers under 25 (23.34%)** — both segments sit above the portfolio average of 21.9%. Borrowers aged 25–50 default least frequently, at 20.55–20.98%. This suggests distinct risk drivers at each end of the age range: limited credit history for younger borrowers, and potentially fixed or declining income for older borrowers.
 
 ### Finding 10 — Early Warning System is validated
 
