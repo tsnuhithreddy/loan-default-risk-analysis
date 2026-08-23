@@ -122,11 +122,14 @@ loan-default-risk-analysis/
 ├── sql/
 │   ├── setup.sql                            # Database setup
 │   ├── reference_tables.sql                 # Risk scoring tables
-│   └── queries.sql                          # 26 business queries
+│   └── queries.sql                          # 28 business queries
+|   ├── views.sql                  
 │
 ├── dashboard/
 │   ├── FinTrust_LoanDefaultRisk_Dashboard.pbix
 │   └── screenshots/                         # All chart and dashboard images
+│
+├── clean_data.py                            # Standalone reproducible cleaning script
 │
 ├── reports/
 │   ├── sql_findings.md                      # 10 SQL findings
@@ -154,9 +157,16 @@ Note: this dataset (CC0) and this project's own code (MIT, see `LICENSE`) are co
 
 ---
 
+## How to Reproduce
+
+1. **Data cleaning:** open `notebooks/Loan_default_risk_analysis.ipynb` in Google Colab, upload `data/raw/credit_risk_dataset.csv` when prompted, run all cells — or run `python clean_data.py` from the repo root.
+2. **Python dependencies:** `pip install -r requirements.txt`
+3. **SQL analysis:** in MySQL, run in order: `sql/setup.sql` → `sql/views.sql` → `sql/queries.sql`
+4. **Dashboard:** open `dashboard/FinTrust_LoanDefaultRisk_Dashboard.pbix` in Power BI Desktop.
+
 ## SQL Analysis Highlights
 
-26 queries across 5 categories:
+28 queries across 5 categories:
 
 ```sql
 -- Window function example: running cumulative exposure
