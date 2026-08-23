@@ -92,7 +92,7 @@ order by default_rate desc;
 -- Business question: Does employment stability predict loan default probability?
 select
 case
-when person_emp_length=0 then 'Unemployed'
+when is_unemployed=1 then 'Unemployed'
 when person_emp_length<2 then 'New'
 when person_emp_length between 2 and 4.9 then 'Developing'
 when person_emp_length between 5 and 9.9 then 'Stable'
