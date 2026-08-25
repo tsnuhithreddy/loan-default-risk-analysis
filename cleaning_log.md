@@ -2,34 +2,33 @@
 
 ## Dataset Information
 
-- Original Dataset: credit_risk_dataset.csv
-- Cleaned Dataset: credit_risk_cleaned.csv
+- **Original Dataset:** `data/raw/credit_risk_dataset.csv`
+- **Cleaned Dataset:** `data/cleaned/credit_risk_cleaned.csv`
+- **Original Rows:** 32,581
+- **Cleaned Rows:** 32,416
+- **Rows Removed:** 165 duplicate records
+- **Final Columns:** 13
 
 ## Cleaning Steps Performed
 
-- Removed duplicate records
-- Handled missing values
-- Created `is_unemployed` feature
-- Corrected unrealistic employment length values
-- Capped unrealistic age values
-- Verified data types
-- Performed final quality checks
+### 1. Duplicate Removal
 
-## Final Dataset Summary
+Exact duplicate records were removed from the raw dataset.
 
-Rows 32416
-Columns 13
-Missing values 0
-Duplicate rows 0
+- Duplicate rows removed: **165**
+- The dataframe index was reset after removal.
 
-## Status
+### 2. Age Validation and Capping
 
-Data cleaning completed successfully.
-Dataset is ready for SQL analysis and Power BI dashboard development.
+`person_age` values above 80 were capped at 80 to limit the influence of implausible extreme ages.
 
-## EDA columns created (not saved to CSV — analysis only)
+The cleaned dataset was validated to ensure that all ages fall within the expected range of **18–80 years**.
 
-- dti_tier: DTI risk classification (Low/Medium/High/Critical)
-- income_band: Income band classification (Low/Medium/High/Very High)
-- age_group: Age group classification (Young/Early Career/Mid Career/Senior)
-- risk_flag: Composite risk flag (High Risk / Normal)
+### 3. Employment-Length Validation
+
+`person_emp_length` was checked against the borrower's age.
+
+A maximum possible employment length was calculated as:
+
+```text
+Maximum employment length = person_age − 16
