@@ -185,8 +185,8 @@ loan-default-risk-analysis/
 │
 └── README.md
     # Project overview, methodology, findings, and reproduction guide
+```
 
-```markdown
 ## Dataset
 
 | Field | Detail |
@@ -214,7 +214,7 @@ See `LICENSE` for the project's MIT license.
 
 1. **Data cleaning:** open `notebooks/Loan_default_risk_analysis.ipynb` in Google Colab, upload `data/raw/credit_risk_dataset.csv` when prompted, run all cells — or run `python clean_data.py` from the repo root.
 2. **Python dependencies:** `pip install -r requirements.txt`
-3. **SQL analysis:** in MySQL, run in order: `sql/setup.sql` → `sql/views.sql` → `sql/queries.sql`
+3. **SQL analysis:** in MySQL, run in order: `sql/setup.sql` → `sql/reference_tables.sql` → `sql/views.sql` → `sql/queries.sql`
 4. **Dashboard:** open `dashboard/FinTrust_LoanDefaultRisk_Dashboard.pbix` in Power BI Desktop.
 
 ## SQL Analysis Highlights
@@ -250,11 +250,11 @@ Full query file: [sql/queries.sql](sql/queries.sql)
 | Step | Issue | Action | Rows affected |
 |---|---|---|---:|
 | 1 | Duplicate rows | Removed duplicate records | 165 |
-| 2 | Implausible ages | Capped age at 80 | Multiple |
-| 3 | Implausible employment length | Capped at age − 16 | 740 |
+| 2 | Implausible ages | Capped age at 80 | 7 |
+| 3 | Implausible employment length | Capped at age − 16 | 737 |
 | 4 | Missing employment length | Filled with 0 and retained a missing-information indicator | 887 |
-| 5 | Missing interest rate | Median imputation within loan grade | 3,116 |
-| 6 | Extreme income values | IQR-based upper cap at $140,232 | Multiple |
+| 5 | Missing interest rate | Median imputation within loan grade | 3,095 |
+| 6 | Extreme income values | IQR-based upper cap at $140,232 | 1478 |
 | 7 | Categorical inconsistencies | Trimmed whitespace and standardized categories | All categorical columns |
 
 Full cleaning documentation: [cleaning_log.md](cleaning_log.md)
@@ -314,9 +314,7 @@ information; it should not be interpreted as confirmed unemployment.
 observed associations in the dataset. They are not validated production
 underwriting rules.
 
-**Potential impact:** Reducing exposure to high-risk borrower segments could materially reduce portfolio losses —The project currently does not have enough information to calculate annual savings.
-
-Instead, the recommendation section above handles the impact without inventing a number.
+**Potential impact:** Reducing exposure to high-risk borrower segments could materially reduce portfolio losses. Specific projected savings are detailed in the Executive Summary report.
 
 Full report: [reports/executive_summary.md](reports/executive_summary.md)
 
@@ -357,9 +355,9 @@ even when those characteristics are not directly used.
 - **No fairness assessment:** Protected characteristics and fairness metrics
   were not available for evaluating potential disparate impacts.
 
-  ---
+---
 
-  ## What I'd Analyze With More Data
+## What I'd Analyze With More Data
 
 - **Time-series default drift** — if loan origination date were available, 
   track whether default rates are worsening or improving by cohort.
@@ -373,7 +371,7 @@ even when those characteristics are not directly used.
   default) is rarely 100%, and modeling recovery would materially change 
   the net loss figures.
 
-  ---
+---
 
 ## About
 
