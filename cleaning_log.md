@@ -7,28 +7,103 @@
 - **Original Rows:** 32,581
 - **Cleaned Rows:** 32,416
 - **Rows Removed:** 165 duplicate records
-- **Final Columns:** 13
+- **Original Columns:** 12
+- **Final Columns:** 13 (includes 1 engineered data-quality indicator)
+
+---
 
 ## Cleaning Steps Performed
 
 ### 1. Duplicate Removal
 
-Exact duplicate records were removed from the raw dataset.
+Exact duplicate records were identified and removed from the raw dataset.
 
-- Duplicate rows removed: **165**
+- **Duplicate rows removed:** 165
+- **Remaining rows:** 32,416
 - The dataframe index was reset after removal.
+
+---
 
 ### 2. Age Validation and Capping
 
-`person_age` values above 80 were capped at 80 to limit the influence of implausible extreme ages.
+`person_age` contained extreme implausible values (such as ages 123 and 144). Values above 80 were capped at 80 to preserve borrower records while removing the distorting effect of extreme outliers.
 
-The cleaned dataset was validated to ensure that all ages fall within the expected range of **18–80 years**.
+- **Rows capped (>80 years):** 7 records (original values: `144, 144, 123, 123, 144, 94, 84`)
+- **Cleaned age range:** 20–80 years
 
-### 3. Employment-Length Validation
+---
 
-`person_emp_length` was checked against the borrower's age.
+### 3. Employment-Length Validation and Capping
 
-A maximum possible employment length was calculated as:
+`person_emp_length` was validated against borrower age. A borrower cannot have worked more years than their age minus the legal minimum working age (16 years).
 
-```text
-Maximum employment length = person_age − 16
+The maximum possible employment length was calculated as:
+
+- **Formula:** `Maximum employment length = person_age − 16`
+- **Rows capped:** 737 records with `person_emp_length > (person_age − 16)` were capped to `person_age − 16`.
+- **Cleaned employment length range:** 0.0–41.0 years
+
+---
+
+### 4. Missing Employment-Length Flagging & Imputation
+
+Missing values in `person_emp_length` were tracked before imputation so that the distinction between known zero employment and unrecorded employment is preserved.
+
+- **Missing values identified:** 887 records (2.74% of clean rows)
+- **Action:** Created an indicator column `is_unemployed` (`1` if originally missing, `0` if recorded).
+- **Imputation:** All missing `person_emp_length` values were filled with `0.0`.
+
+---
+
+### 5. Missing Interest Rate Imputation
+
+Missing values in `loan_int_rate` were imputed using group-level medians segmented by `loan_grade` to reflect the risk-based pricing tier of each loan.
+
+- **Missing values identified:** 3,095 records (9.55% of clean rows)
+- **Imputation medians by grade:**
+  - **Grade A:** 7.49%
+  - **Grade B:** 10.99%
+  - **Grade C:** 13.48%
+  - **Grade D:** 15.31%
+  - **Grade E:** 16.82%
+  - **Grade F:** 18.535%
+  - **Grade G:** 20.16%
+- **Remaining nulls:** 0
+
+---
+
+### 6. Extreme Income Outlier Capping
+
+`person_income` exhibited extreme positive skewness with maximum reported income reaching $6,000,000. Values above the Interquartile Range (IQR) upper fence were capped to reduce outlier leverage on statistical metrics.
+
+- **Q1 (25th percentile):** $38,542
+- **Q3 (75th percentile):** $79,218
+- **IQR:** Q3 − Q1 = $40,676
+- **Upper Fence:** Q3 + (1.5 × IQR) = $140,232
+- **Rows capped (income > $140,232):** 1,478 records
+- **Cleaned income range:** $4,000 – $140,232
+
+---
+
+### 7. Categorical Standardization
+
+Categorical string columns were standardized by removing leading/trailing whitespace and converting all characters to uppercase.
+
+- **Columns standardized:**
+  - `person_home_ownership` (`MORTGAGE`, `RENT`, `OWN`, `OTHER`)
+  - `loan_intent` (`DEBTCONSOLIDATION`, `EDUCATION`, `HOMEIMPROVEMENT`, `MEDICAL`, `PERSONAL`, `VENTURE`)
+  - `loan_grade` (`A`, `B`, `C`, `D`, `E`, `F`, `G`)
+  - `cb_person_default_on_file` (`Y`, `N`)
+
+---
+
+### 8. Final Post-Cleaning Quality Validation
+
+A final automated validation block was executed to guarantee data integrity:
+
+- **Missing values:** 0 across all 13 columns.
+- **Duplicate records:** 0 duplicate rows remaining.
+- **Age boundaries:** All values strictly within [20, 80].
+- **Employment length:** All values >= 0.0 and <= (person_age - 16).
+- **Income boundaries:** All values <= $140,232.
+- **Final dataset dimensions:** 32,416 rows × 13 columns.
