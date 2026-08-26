@@ -1,6 +1,6 @@
 -- FinTrust Lending Co. — SQL Analysis
 -- Analyst: T Snuhith Reddy
--- Phase 6: 26 Business Intelligence Queries
+-- Phase 6: 28 Business Intelligence Queries
 -- Database: fintrust_lending | MySQL 8.0
 -- Dataset: 32,416 loan records (post-cleaning)
 
@@ -8,110 +8,125 @@ USE fintrust_lending;
 
 -- Q1: Overall default rate
 -- Business question: What is FinTrust's current overall loan default rate across all 32,416 loans?
-select count(*) as total_loans,
-sum(loan_status) as total_defaults,
-count(*)-sum(loan_status) as total_non_defaults,
-round(avg(loan_status)*100,2) as default_rate_pct
-from credit_risk;
+SELECT COUNT(*) AS total_loans,
+       SUM(loan_status) AS total_defaults,
+       COUNT(*) - SUM(loan_status) AS total_non_defaults,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate_pct
+FROM credit_risk;
 
 -- Q2: Default rate by loan grade
 -- Business question: Which loan grades are performing worst and what is the default rate within each grade?
-select loan_grade,count(*) as total_loans,sum(loan_status) as total_defaults,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_grade
-order by default_rate desc;
+SELECT loan_grade,
+       COUNT(*) AS total_loans,
+       SUM(loan_status) AS total_defaults,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY loan_grade
+ORDER BY default_rate DESC;
 
 -- Q3: Default rate by loan intent
 -- Business question: Which loan purposes carry the highest default risk for FinTrust?
-select loan_intent,count(*) as total_loans,sum(loan_status) as total_defaults,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_intent
-order by default_rate desc;
+SELECT loan_intent,
+       COUNT(*) AS total_loans,
+       SUM(loan_status) AS total_defaults,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY loan_intent
+ORDER BY default_rate DESC;
 
 -- Q4: Default rate by home ownership
 -- Business question: Does home ownership status reliably predict default risk?
-select person_home_ownership,count(*) as total_loans,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by person_home_ownership
-order by default_rate desc;
+SELECT person_home_ownership,
+       COUNT(*) AS total_loans,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY person_home_ownership
+ORDER BY default_rate DESC;
 
 -- Q5: High volume high risk loan intents
 -- Business question: Which loan purposes are simultaneously high volume and high risk?
-select loan_intent,count(*) as total_loans,sum(loan_status) as total_defaults,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_intent
-having count(*)>5000 and avg(loan_status)*100>20;
+SELECT loan_intent,
+       COUNT(*) AS total_loans,
+       SUM(loan_status) AS total_defaults,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY loan_intent
+HAVING COUNT(*) > 5000 AND AVG(loan_status) * 100.0 > 20;
 
 -- Q6: Age group segmentation
 -- Business question: Which age group carries the highest default risk at FinTrust?
-select 
-case
-when person_age<25 then 'Young'
-when person_age between 25 and 35 then 'Early Career'
-when person_age between 36 and 50 then 'Mid Career'
-when person_age>50 then 'Senior'
-end as age_group,
-count(*) as total_loans,
-sum(loan_status) as total_defaults,
-round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by age_group
-order by default_rate desc;
+SELECT 
+    CASE
+        WHEN person_age < 25 THEN 'Young'
+        WHEN person_age BETWEEN 25 AND 35 THEN 'Early Career'
+        WHEN person_age BETWEEN 36 AND 50 THEN 'Mid Career'
+        ELSE 'Senior'
+    END AS age_group,
+    COUNT(*) AS total_loans,
+    SUM(loan_status) AS total_defaults,
+    ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY age_group
+ORDER BY default_rate DESC;
 
 -- Q7: Income band analysis
 -- Business question: At what income level does default risk drop significantly?
-select
-case 
-when person_income<30000 then 'Low'
-when person_income between 30000 and 59999 then 'medium'
-when person_income between 60000 and 99999 then 'High'
-else 'Very High'
-end as income_band,
-count(*) as total_loans,sum(loan_status) as total_defaults,
-round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by income_band
-order by default_rate desc;
+SELECT
+    CASE 
+        WHEN person_income < 30000 THEN 'Low'
+        WHEN person_income BETWEEN 30000 AND 59999 THEN 'Medium'
+        WHEN person_income BETWEEN 60000 AND 99999 THEN 'High'
+        ELSE 'Very High'
+    END AS income_band,
+    COUNT(*) AS total_loans,
+    SUM(loan_status) AS total_defaults,
+    ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY income_band
+ORDER BY default_rate DESC;
 
 -- Q8: DTI risk classification
 -- Business question: Does FinTrust's 35% DTI threshold correctly identify high-risk borrowers?
-select
-case 
-when loan_percent_income<0.20 then 'Low'
-when loan_percent_income between 0.20 and 0.34 then 'Medium'
-when loan_percent_income between 0.35 and 0.49 then 'High'
-else 'Critical'
-end as dti_risk,
-count(*) as total_loans,sum(loan_status) as total_defaults,
-round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by dti_risk
-order by default_rate desc;
+SELECT
+    CASE 
+        WHEN loan_percent_income < 0.20 THEN 'Low'
+        WHEN loan_percent_income BETWEEN 0.20 AND 0.34 THEN 'Medium'
+        WHEN loan_percent_income BETWEEN 0.35 AND 0.49 THEN 'High'
+        ELSE 'Critical'
+    END AS dti_risk,
+    COUNT(*) AS total_loans,
+    SUM(loan_status) AS total_defaults,
+    ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY dti_risk
+ORDER BY default_rate DESC;
 
 -- Q9: Employment stability classification
 -- Business question: Does employment stability predict loan default probability?
-select
-case
-when is_unemployed=1 then 'Unemployed'
-when person_emp_length<2 then 'New'
-when person_emp_length between 2 and 4.9 then 'Developing'
-when person_emp_length between 5 and 9.9 then 'Stable'
-else 'Veteran'
-end as employment_stability,
-count(*) as total_loans,sum(loan_status) as total_defaults,
-round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by employment_stability
-order by default_rate desc;
+SELECT
+    CASE
+        WHEN is_unemployed = 1 THEN 'Unemployed'
+        WHEN person_emp_length < 2 THEN 'New'
+        WHEN person_emp_length BETWEEN 2 AND 4.9 THEN 'Developing'
+        WHEN person_emp_length BETWEEN 5 AND 9.9 THEN 'Stable'
+        ELSE 'Veteran'
+    END AS employment_stability,
+    COUNT(*) AS total_loans,
+    SUM(loan_status) AS total_defaults,
+    ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY employment_stability
+ORDER BY default_rate DESC;
 
 -- Q10: Composite risk flag
 -- Business question: How many borrowers meet FinTrust's high-risk criteria and what is their default rate?
-select risk_flag,
-count(*) as total_borrowers,sum(loan_status) as total_defaults,
-round(avg(loan_status)*100,2) as default_rate
-from risk_flagged_loans
-group by risk_flag
-order by default_rate DESC;
+SELECT risk_flag,
+       COUNT(*) AS total_borrowers,
+       SUM(loan_status) AS total_defaults,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM risk_flagged_loans
+GROUP BY risk_flag
+ORDER BY default_rate DESC;
 
 -- Q11: Grade with reference data
 -- Business question: How does actual default rate compare to FinTrust's internal grade classification?
@@ -119,7 +134,7 @@ SELECT
     l.grade AS loan_grade,
     l.risk_category,
     COUNT(c.loan_status) AS total_loans,
-    ROUND(AVG(c.loan_status) * 100, 2) AS default_rate,
+    ROUND(AVG(c.loan_status) * 100.0, 2) AS default_rate,
     l.approval_recommendation
 FROM loan_grade_reference l
 JOIN credit_risk c
@@ -130,241 +145,316 @@ GROUP BY
     l.approval_recommendation
 ORDER BY
     l.grade;
-    
+
 -- Q12: Interest rate vs benchmark
 -- Business question: Are FinTrust's interest rates appropriately priced for the risk level of each grade?
-select l.grade,l.typical_rate_min,l.typical_rate_max,round(avg(c.loan_int_rate),2) as avg_rate,
-case
-when avg(c.loan_int_rate)< l.typical_rate_min then 'Underpriced'
-when avg(c.loan_int_rate)> l.typical_rate_max then 'Overpriced'
-else 'Appropriately priced'
-end as pricing_status
-from loan_grade_reference l
-join credit_risk c
-on c.loan_grade=l.grade
-group by l.grade,l.typical_rate_min, l.typical_rate_max
-order by l.grade;
+SELECT l.grade,
+       l.typical_rate_min,
+       l.typical_rate_max,
+       ROUND(AVG(c.loan_int_rate), 2) AS avg_rate,
+       CASE
+           WHEN AVG(c.loan_int_rate) < l.typical_rate_min THEN 'Underpriced'
+           WHEN AVG(c.loan_int_rate) > l.typical_rate_max THEN 'Overpriced'
+           ELSE 'Appropriately priced'
+       END AS pricing_status
+FROM loan_grade_reference l
+JOIN credit_risk c
+    ON c.loan_grade = l.grade
+GROUP BY l.grade, l.typical_rate_min, l.typical_rate_max
+ORDER BY l.grade;
 
 -- Q13: Risk tier assignment
 -- Business question: How do actual default rates compare to expected ranges in FinTrust's risk scoring matrix?
-select r.risk_tier,r.tier_description,count(*) as total_loans,
-sum(c.loan_status) as total_defaults,round(avg(c.loan_status)*100,2) as default_rate,
-r.expected_default_rate_min as expected_min,r.expected_default_rate_max as expected_max,
-case 
-when avg(c.loan_status)*100>r.expected_default_rate_max then 'Worse than expected'
-when avg(c.loan_status)*100<r.expected_default_rate_min then 'Better than expected'
-else 'Within expected range'
-end as expected_performance
-from credit_risk c 
-join risk_scoring_matrix r 
-on case
-when c.loan_grade in ('A','B') then 'Low'
-when c.loan_grade in ('C','D') then 'Medium'
-when c.loan_grade in ('E','F') then 'High'
-else 'Critical'
-end=r.risk_tier
-group by
-r.risk_tier,r.tier_description,r.expected_default_rate_max,r.expected_default_rate_min
-order by default_rate desc;
+SELECT r.risk_tier,
+       r.tier_description,
+       COUNT(*) AS total_loans,
+       SUM(c.loan_status) AS total_defaults,
+       ROUND(AVG(c.loan_status) * 100.0, 2) AS default_rate,
+       r.expected_default_rate_min AS expected_min,
+       r.expected_default_rate_max AS expected_max,
+       CASE 
+           WHEN AVG(c.loan_status) * 100.0 > r.expected_default_rate_max THEN 'Worse than expected'
+           WHEN AVG(c.loan_status) * 100.0 < r.expected_default_rate_min THEN 'Better than expected'
+           ELSE 'Within expected range'
+       END AS expected_performance
+FROM credit_risk c 
+JOIN risk_scoring_matrix r 
+    ON CASE
+        WHEN c.loan_grade IN ('A','B') THEN 'Low'
+        WHEN c.loan_grade IN ('C','D') THEN 'Medium'
+        WHEN c.loan_grade IN ('E','F') THEN 'High'
+        ELSE 'Critical'
+    END = r.risk_tier
+GROUP BY
+    r.risk_tier, r.tier_description, r.expected_default_rate_max, r.expected_default_rate_min
+ORDER BY default_rate DESC;
 
 -- Q14: Financial exposure by grade
 -- Business question: Which loan grades are costing FinTrust the most money in absolute default losses?
-select loan_grade,sum(loan_amnt) as total_loan_amount,
-sum(
-case
-when loan_status=1 then loan_amnt
-else 0
-end) as defaulted_amount,
-round(sum(
-case
-when loan_status=1 then loan_amnt
-else 0
-end)*100/Sum(loan_amnt),2) as default_percentage
-from credit_risk
-group by loan_grade
-order by defaulted_amount desc;
+SELECT loan_grade,
+       SUM(loan_amnt) AS total_loan_amount,
+       SUM(CASE WHEN loan_status = 1 THEN loan_amnt ELSE 0 END) AS defaulted_amount,
+       ROUND(SUM(CASE WHEN loan_status = 1 THEN loan_amnt ELSE 0 END) * 100.0 / SUM(loan_amnt), 2) AS default_percentage
+FROM credit_risk
+GROUP BY loan_grade
+ORDER BY defaulted_amount DESC;
 
 -- Q15: Prior default impact
 -- Business question: How much more likely is a borrower with a prior default to default again with FinTrust?
-with default_by_prior as (
-    select cb_person_default_on_file, count(*) as total_loans,
-           round(avg(loan_status)*100, 2) as default_rate
-    from credit_risk
-    group by cb_person_default_on_file
+WITH default_by_prior AS (
+    SELECT cb_person_default_on_file,
+           COUNT(*) AS total_loans,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+    FROM credit_risk
+    GROUP BY cb_person_default_on_file
 ),
-baseline as (
-    select default_rate as baseline_rate from default_by_prior
-    where cb_person_default_on_file = 'N'
+baseline AS (
+    SELECT default_rate AS baseline_rate 
+    FROM default_by_prior
+    WHERE cb_person_default_on_file = 'N'
 )
-select d.cb_person_default_on_file, d.total_loans, d.default_rate,
-       round(d.default_rate / b.baseline_rate, 2) as times_more_likely
-from default_by_prior d
-cross join baseline b
-order by d.cb_person_default_on_file;
+SELECT d.cb_person_default_on_file,
+       d.total_loans,
+       d.default_rate,
+       ROUND(d.default_rate / b.baseline_rate, 2) AS times_more_likely
+FROM default_by_prior d
+CROSS JOIN baseline b
+ORDER BY d.cb_person_default_on_file;
 
 -- Q16: CTE — default rate by grade with ranking
 -- Business question: Which grade ranks as the single highest default risk in FinTrust's portfolio?
-with grade_stats as
-( select loan_grade,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_grade)
-select loan_grade,default_rate,rank() over(order by default_rate desc) as ranked from grade_stats;
+WITH grade_stats AS (
+    SELECT loan_grade,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+    FROM credit_risk
+    GROUP BY loan_grade
+)
+SELECT loan_grade,
+       default_rate,
+       RANK() OVER (ORDER BY default_rate DESC) AS ranked 
+FROM grade_stats;
 
 -- Q17: CTE — above average default segments
 -- Business question: Which loan intents consistently exceed FinTrust's overall average default rate?
-with avg_default_rate as
-(select loan_intent,round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_intent),
-overall_avg as 
-(select round(avg(loan_status)*100,2) as overall_default
-from credit_risk)
-select a.loan_intent,a.default_rate,o.overall_default
-from avg_default_rate a
-cross join overall_avg o
-where a.default_rate>o.overall_default;
+WITH avg_default_rate AS (
+    SELECT loan_intent,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+    FROM credit_risk
+    GROUP BY loan_intent
+),
+overall_avg AS (
+    SELECT ROUND(AVG(loan_status) * 100.0, 2) AS overall_default
+    FROM credit_risk
+)
+SELECT a.loan_intent,
+       a.default_rate,
+       o.overall_default
+FROM avg_default_rate a
+CROSS JOIN overall_avg o
+WHERE a.default_rate > o.overall_default;
 
 -- Q18: CTE — financial exposure summary with cumulative running total
 -- Business question: How does FinTrust's total default exposure accumulate as loan grade quality decreases?
-with grade_details as
-(select loan_grade,sum(loan_amnt) as total_loan_amount,
-sum(case
-when loan_status=1 then loan_amnt else 0 end) as total_defaulted_amount
-from credit_risk
-group by loan_grade)
-select loan_grade,total_loan_amount,total_defaulted_amount,
-round(total_defaulted_amount*100/sum(total_defaulted_amount) over(),2) as percent_of_total_portfolio,
-sum(total_defaulted_amount) over(order by total_defaulted_amount desc) as cumulative_exposure
-from grade_details
-order by total_Defaulted_amount desc;
+WITH grade_details AS (
+    SELECT loan_grade,
+           SUM(loan_amnt) AS total_loan_amount,
+           SUM(CASE WHEN loan_status = 1 THEN loan_amnt ELSE 0 END) AS total_defaulted_amount
+    FROM credit_risk
+    GROUP BY loan_grade
+)
+SELECT loan_grade,
+       total_loan_amount,
+       total_defaulted_amount,
+       ROUND(total_defaulted_amount * 100.0 / SUM(total_defaulted_amount) OVER (), 2) AS percent_of_total_portfolio,
+       SUM(total_defaulted_amount) OVER (ORDER BY total_defaulted_amount DESC) AS cumulative_exposure
+FROM grade_details
+ORDER BY total_defaulted_amount DESC;
 
 -- Q19: CTE — high risk borrower profile
 -- Business question: What does the typical high-risk FinTrust borrower look like demographically?
-with profile as
-(select * from credit_risk
-where loan_grade in ('E','F','G') and cb_person_default_on_file='Y'),
-intent as
-( select loan_intent,count(*) as intent_count,
-row_number() over(order by count(*) desc) as rnk
-from profile
-group by loan_intent)
-select
-(select count(*) from profile) as total_high_risk_borrowers,
-(select round(avg(person_age),1) from profile) as avg_age,
-(select round(avg(person_income),0) from profile) as avg_income,
-(select round(avg(loan_amnt),0) from profile) as avg_loan_amount,
-(select round(avg(loan_status)*100,2) from profile) as default_rate,
-loan_intent as most_common_intent
-from intent where rnk=1;
+WITH profile AS (
+    SELECT * 
+    FROM credit_risk
+    WHERE loan_grade IN ('E','F','G') 
+      AND cb_person_default_on_file = 'Y'
+),
+intent AS (
+    SELECT loan_intent,
+           COUNT(*) AS intent_count,
+           ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rnk
+    FROM profile
+    GROUP BY loan_intent
+)
+SELECT
+    (SELECT COUNT(*) FROM profile) AS total_high_risk_borrowers,
+    (SELECT ROUND(AVG(person_age), 1) FROM profile) AS avg_age,
+    (SELECT ROUND(AVG(person_income), 0) FROM profile) AS avg_income,
+    (SELECT ROUND(AVG(loan_amnt), 0) FROM profile) AS avg_loan_amount,
+    (SELECT ROUND(AVG(loan_status) * 100.0, 2) FROM profile) AS default_rate,
+    loan_intent AS most_common_intent
+FROM intent 
+WHERE rnk = 1;
 
 -- Q20: CTE — revenue vs loss analysis
 -- Business question: Which loan grades are actually profitable for FinTrust after accounting for default losses?
-with revenue_per_grade as
-( select loan_grade,round(sum(loan_amnt*loan_int_rate/100),2) as expected_revenue
-from credit_risk
-where loan_status=0
-group by loan_grade
-),loss_per_grade as
-(select loan_grade,round(sum(loan_amnt),2) as total_loss
-from credit_risk
-where loan_status=1
-group by loan_grade)
-select r.loan_grade,r.expected_revenue,coalesce(l.total_loss,0) as total_loss,
-case
-when r.expected_revenue>coalesce(l.total_loss,0) then 'Profitable'
-when r.expected_revenue<coalesce(l.total_loss,0) then 'Loss'
-else 'No profit and loss'
-end as revenue_vs_loss
-from revenue_per_grade r
-left join loss_per_grade l
-on r.loan_grade=l.loan_grade
-order by r.loan_grade;
+WITH revenue_per_grade AS (
+    SELECT loan_grade,
+           ROUND(SUM(loan_amnt * loan_int_rate / 100.0), 2) AS expected_revenue
+    FROM credit_risk
+    WHERE loan_status = 0
+    GROUP BY loan_grade
+),
+loss_per_grade AS (
+    SELECT loan_grade,
+           ROUND(SUM(loan_amnt), 2) AS total_loss
+    FROM credit_risk
+    WHERE loan_status = 1
+    GROUP BY loan_grade
+)
+SELECT r.loan_grade,
+       r.expected_revenue,
+       COALESCE(l.total_loss, 0) AS total_loss,
+       CASE
+           WHEN r.expected_revenue > COALESCE(l.total_loss, 0) THEN 'Profitable'
+           WHEN r.expected_revenue < COALESCE(l.total_loss, 0) THEN 'Loss'
+           ELSE 'Break-even'
+       END AS revenue_vs_loss
+FROM revenue_per_grade r
+LEFT JOIN loss_per_grade l
+    ON r.loan_grade = l.loan_grade
+ORDER BY r.loan_grade;
 
 -- Q21: Window function — rank grades by default rate
 -- Business question: What is the official risk ranking of all 7 loan grades in FinTrust's portfolio?
-select loan_grade,total_loans,default_rate,rank() over(order by default_rate desc) as risk_rank
-from (
-select loan_grade,count(*) as total_loans,
-round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_grade) as grade_summary
-order by risk_rank;
+SELECT loan_grade,
+       total_loans,
+       default_rate,
+       RANK() OVER (ORDER BY default_rate DESC) AS risk_rank
+FROM (
+    SELECT loan_grade,
+           COUNT(*) AS total_loans,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+    FROM credit_risk
+    GROUP BY loan_grade
+) AS grade_summary
+ORDER BY risk_rank;
 
 -- Q22: Window function — running total of default exposure
 -- Business question: How does FinTrust's cumulative default loss build from Grade A through Grade G?
-select loan_grade,count(*) as defaulted_loans,sum(loan_amnt) as default_exposure,sum(sum(loan_amnt)) over(order by loan_grade) as running_total
-from credit_risk
-where loan_status=1
-group by loan_grade
-order by loan_grade;
+SELECT loan_grade,
+       COUNT(*) AS defaulted_loans,
+       SUM(loan_amnt) AS default_exposure,
+       SUM(SUM(loan_amnt)) OVER (ORDER BY loan_grade) AS running_total
+FROM credit_risk
+WHERE loan_status = 1
+GROUP BY loan_grade
+ORDER BY loan_grade;
 
 -- Q23: Window function — income quartile analysis
 -- Business question: Do higher income borrowers consistently default less across all income levels?
-select income_quartile,min(person_income) as quartile_income_min,max(person_income) as quartile_income_max,
-count(*) as total_borrowers,round(avg(loan_status)*100,2) as default_rate
-from(
-select person_income,loan_status,
-ntile(4) over(order by person_income) as income_quartile from credit_risk) as income_groups
-group by income_quartile
-order by income_quartile; 
+SELECT income_quartile,
+       MIN(person_income) AS quartile_income_min,
+       MAX(person_income) AS quartile_income_max,
+       COUNT(*) AS total_borrowers,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM (
+    SELECT person_income,
+           loan_status,
+           NTILE(4) OVER (ORDER BY person_income) AS income_quartile 
+    FROM credit_risk
+) AS income_groups
+GROUP BY income_quartile
+ORDER BY income_quartile;
 
 -- Q24: Window function — top 3 riskiest loan intents per home ownership type
 -- Business question: Within each home ownership group, which loan purposes are the most dangerous?
-select person_home_ownership,loan_intent,total_loans,default_rate,intent_rank
-from (
-select person_home_ownership,loan_intent,count(*) as total_loans,
-round(avg(loan_status)*100,2) as default_rate,
-row_number() over(partition by person_home_ownership order by avg(loan_status) desc) as intent_rank
-from credit_risk
-group by person_home_ownership,loan_intent) as top_intents
-where intent_rank<=3
-order by person_home_ownership,intent_rank;
+SELECT person_home_ownership,
+       loan_intent,
+       total_loans,
+       default_rate,
+       intent_rank
+FROM (
+    SELECT person_home_ownership,
+           loan_intent,
+           COUNT(*) AS total_loans,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate,
+           ROW_NUMBER() OVER (PARTITION BY person_home_ownership ORDER BY AVG(loan_status) DESC) AS intent_rank
+    FROM credit_risk
+    GROUP BY person_home_ownership, loan_intent
+) AS top_intents
+WHERE intent_rank <= 3
+ORDER BY person_home_ownership, intent_rank;
 
 -- Q25: Window function — grade average vs individual loan outcome
 -- Business question: Which individual loans were statistical outliers relative to their grade's average default rate?
-select loan_grade,loan_amnt,loan_status,loan_int_rate,
-round(avg(loan_status) over(partition by loan_grade),2) as avg_default_rate,
-round(loan_status-avg(loan_status) over(partition by loan_grade),2) as deviation
-from credit_risk
-limit 20;
+SELECT loan_grade,
+       loan_amnt,
+       loan_status,
+       loan_int_rate,
+       ROUND(AVG(loan_status) OVER (PARTITION BY loan_grade), 2) AS avg_default_rate,
+       ROUND(loan_status - AVG(loan_status) OVER (PARTITION BY loan_grade), 2) AS deviation
+FROM credit_risk
+LIMIT 20;
 
 -- Q26: Executive summary — full portfolio risk analysis
 -- Business question: What is the complete picture of FinTrust's loan portfolio performance and what actions are required?
-with grade_summary as
-(select loan_grade,count(*) as total_loans,sum(loan_status) as total_defaults,round(avg(loan_status)*100,2) as default_percentage,
-sum(case when loan_status=1 then loan_amnt else 0 end) as default_exposure
-from credit_risk
-group by loan_grade),
-grade_with_tier as
-(select *,
-case when loan_grade in ('A','B') then 'Low'
-when loan_grade in ('C','D') then 'Medium'
-when loan_grade in ('E','F') then 'High'
-else 'Critical' end as risk_tier
-from grade_summary)
-select g.loan_grade,l.risk_category,g.total_loans,g.total_defaults,g.default_exposure,l.approval_recommendation,r.expected_default_rate_min,r.expected_default_rate_max,
-case
-when g.default_percentage>r.expected_default_rate_max+5 then 'immediate_action_required'
-else 'monitoring' end as final_action
-from grade_with_tier g join loan_grade_reference l
-on g.loan_grade=l.grade
-join risk_scoring_matrix r on g.risk_tier=r.risk_tier
-order by g.default_percentage desc;
+WITH grade_summary AS (
+    SELECT loan_grade,
+           COUNT(*) AS total_loans,
+           SUM(loan_status) AS total_defaults,
+           ROUND(AVG(loan_status) * 100.0, 2) AS default_percentage,
+           SUM(CASE WHEN loan_status = 1 THEN loan_amnt ELSE 0 END) AS default_exposure
+    FROM credit_risk
+    GROUP BY loan_grade
+),
+grade_with_tier AS (
+    SELECT *,
+           CASE 
+               WHEN loan_grade IN ('A','B') THEN 'Low'
+               WHEN loan_grade IN ('C','D') THEN 'Medium'
+               WHEN loan_grade IN ('E','F') THEN 'High'
+               ELSE 'Critical' 
+           END AS risk_tier
+    FROM grade_summary
+)
+SELECT g.loan_grade,
+       l.risk_category,
+       g.total_loans,
+       g.total_defaults,
+       g.default_exposure,
+       l.approval_recommendation,
+       r.expected_default_rate_min,
+       r.expected_default_rate_max,
+       CASE
+           WHEN g.default_percentage > r.expected_default_rate_max + 5 THEN 'immediate_action_required'
+           ELSE 'monitoring' 
+       END AS final_action
+FROM grade_with_tier g 
+JOIN loan_grade_reference l
+    ON g.loan_grade = l.grade
+JOIN risk_scoring_matrix r 
+    ON g.risk_tier = r.risk_tier
+ORDER BY g.default_percentage DESC;
 
 -- Q27: Grade x DTI interaction
-select loan_grade,
-case
-when loan_percent_income<0.20 then 'Low DTI'
-when loan_percent_income<0.35 then 'Medium DTI'
-else 'High DTI (35%+)'
-end as dti_tier,
-count(*) as total_loans, round(avg(loan_status)*100,2) as default_rate
-from credit_risk
-group by loan_grade, dti_tier
-having count(*)>=30
-order by loan_grade, dti_tier;
+-- Business question: How does default risk escalate across DTI tiers within each loan grade?
+SELECT loan_grade,
+       CASE
+           WHEN loan_percent_income < 0.20 THEN 'Low DTI'
+           WHEN loan_percent_income < 0.35 THEN 'Medium DTI'
+           ELSE 'High DTI (35%+)'
+       END AS dti_tier,
+       COUNT(*) AS total_loans,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+FROM credit_risk
+GROUP BY loan_grade, dti_tier
+HAVING COUNT(*) >= 30
+ORDER BY loan_grade, dti_tier;
 
 -- Q28: Pipeline validation checksum — expect 32416 rows, 21.87%, $310,994,100, 7 grades
-select count(*) as row_count, round(avg(loan_status)*100,2) as default_rate_pct,
-sum(loan_amnt) as total_loan_volume, count(distinct loan_grade) as distinct_grades
-from credit_risk;
+-- Business question: Does the loaded SQL database reconcile exactly with the validated dataset?
+SELECT COUNT(*) AS row_count,
+       ROUND(AVG(loan_status) * 100.0, 2) AS default_rate_pct,
+       SUM(loan_amnt) AS total_loan_volume,
+       COUNT(DISTINCT loan_grade) AS distinct_grades
+FROM credit_risk;
