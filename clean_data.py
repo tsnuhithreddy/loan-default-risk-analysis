@@ -69,11 +69,11 @@ def flag_and_fill_missing_employment(df: pd.DataFrame) -> pd.DataFrame:
     The flag represents missing employment information, not confirmed
     unemployment.
     """
-    df["is_unemployed"] = df["person_emp_length"].isnull().astype(int)
+    df["emp_length_missing"] = df["person_emp_length"].isnull().astype(int)
     df["person_emp_length"] = df["person_emp_length"].fillna(0.0)
 
     assert df["person_emp_length"].isnull().sum() == 0, "Unfilled employment-length nulls remain"
-    print(f"Flagged {df['is_unemployed'].sum():,} borrowers with missing employment-length information")
+    print(f"Flagged {df['emp_length_missing'].sum():,} borrowers with missing employment-length information")
     return df
 
 
@@ -116,7 +116,7 @@ def run_validation(df: pd.DataFrame) -> None:
     assert df["person_age"].between(18, 80).all(), "Age out of expected range"
     assert df["person_emp_length"].min() >= 0, "Negative employment length"
     assert df.duplicated().sum() == 0, "Duplicates remain"
-    assert df["is_unemployed"].isin([0, 1]).all(), "Invalid employment-missing flag"
+    assert df["emp_length_missing"].isin([0, 1]).all(), "Invalid employment-missing flag"
     print("All validation checks passed.")
 
 
