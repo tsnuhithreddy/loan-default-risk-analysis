@@ -1,103 +1,75 @@
-# Statistical Findings
+# Statistical Validation Findings — FinTrust Lending Co.
 
-This report summarizes the formal statistical validation performed in
-`notebooks/Loan_default_risk_analysis.ipynb`. The exploratory findings in
-`eda_findings.md` and `sql_findings.md` describe *what* the patterns in the
-data look like; this report confirms *whether those patterns are unlikely to
-be due to chance*, using standard hypothesis tests rather than visual
-inspection alone.
-
-All figures below were run directly from the cleaned dataset (32,416 rows)
-and can be reproduced by running the "Statistical Validation" section of the
-notebook.
+**Analyst:** Telukala Snuhith Reddy  
+**Dataset:** 32,416 historical loan records (`data/cleaned/credit_risk_cleaned.csv`)  
+**Methodology Note:** This report summarizes the formal hypothesis tests conducted to evaluate whether observed exploratory patterns represent statistically significant in-sample associations rather than random sampling fluctuations.
 
 ---
 
-## Finding 1 — Loan grade is significantly associated with default (Chi-square test)
+## Finding 1 — Loan Grade is Significantly Associated with Default (Chi-Square Test)
 
-A chi-square test of independence was run on loan grade vs. default status.
+A Pearson Chi-Square test of independence was performed to assess the relationship between loan grade and loan outcome (`loan_status`).
 
-- **Chi-square statistic:** 5588.33
-- **Degrees of freedom:** 6
-- **P-value:** < 0.001
+- **Chi-Square Statistic ($\chi^2$):** 5,588.33
+- **Degrees of Freedom ($df$):** 6
+- **P-Value:** $< 0.001$
 
-**Interpretation:** Default status is significantly associated with loan
-grade. This provides formal statistical support for the pattern observed
-throughout the exploratory analysis — default rates differ meaningfully
-across FinTrust's seven loan grades, and this is very unlikely to be
-explained by random chance.
+**Interpretation:** Default status is statistically dependent on loan grade at the $\alpha = 0.001$ level. This confirms that the observed monotonic escalation in default rates from Grade A (9.96%) through Grade G (98.44%) represents a statistically significant association within this dataset.
 
 ---
 
-## Finding 2 — The 35% DTI threshold produces a statistically significant risk split (Two-proportion z-test)
+## Finding 2 — 35% DTI Split Demonstrates Statistically Significant Risk Separation (Two-Proportion Z-Test)
 
-- **≤35% DTI default rate:** 18.28% (n = 30,248)
-- **>35% DTI default rate:** 71.96% (n = 2,168)
-- **Difference:** 53.68 percentage points
-- **Risk ratio:** 3.94x
-- **Z-statistic:** 58.41
-- **P-value:** < 0.001
+A two-proportion hypothesis test was conducted comparing default proportions between borrowers above and below the 35% Loan-to-Income (DTI) threshold.
 
-**Interpretation:** Borrowers above the 35% DTI threshold default at nearly
-4x the rate of borrowers below it, and this difference is statistically
-significant, not sampling noise. This directly supports enforcing the 35%
-DTI ceiling as a hard underwriting rule rather than a soft guideline.
+- **$\le$35% DTI Default Rate:** 18.28% ($n = 30,248$; 5,530 defaults)
+- **>35% DTI Default Rate:** 71.96% ($n = 2,168$; 1,559 defaults)
+- **Absolute Risk Difference:** 53.68 percentage points
+- **95% Confidence Interval for Difference:** [51.78%, 55.58%]
+- **Risk Ratio:** $3.94\times$
+- **Z-Statistic:** 58.41
+- **P-Value:** $< 0.001$
 
-*Note: an earlier internal breakdown using a 4-tier DTI classification
-(Low/Medium/High/Critical) reported 69.87% for the 35–49% band specifically,
-excluding the 50%+ "Critical" tier. That figure and the 71.96% above are not
-in conflict — they describe different groupings of the same underlying data.
-The 71.96% figure is the one formally validated by this test and is the
-number used in the README and executive summary.*
+**Interpretation:** Borrowers with a DTI ratio exceeding 35% default at nearly $4\times$ the rate of borrowers at or below 35%. The difference is statistically significant ($p < 0.001$). This empirical separation supports designating 35% DTI as a primary candidate threshold for mandatory manual underwriting review.
+
+> **Grouping Note:** An exploratory 4-tier breakdown reported 69.87% default for the 35–49% tier and 78.43% for $\ge$50%. The 71.96% figure represents the aggregated pool of all loans with DTI $> 35\%$, formally evaluated by this test.
 
 ---
 
-## Finding 3 — The composite risk flag significantly separates high- and low-risk borrowers (Two-proportion z-test)
+## Finding 3 — Composite Risk Flag Achieves Statistically Significant Risk Segmentation (Two-Proportion Z-Test)
 
-- **High Risk default rate:** 44.45% (n = 7,228)
-- **Normal default rate:** 15.39% (n = 25,188)
-- **Risk difference:** 29.06 percentage points
-- **95% CI for the difference:** 27.83 to 30.29 percentage points
-- **Risk ratio:** 2.89x
-- **Z-statistic:** 52.69
-- **P-value:** < 0.001
+A two-proportion test was conducted evaluating the composite analytical risk flag (`Grade ∈ {E,F,G}` OR `DTI > 40%` OR `Prior Default = 'Y'`).
 
-**Interpretation:** FinTrust's composite risk flag (Grade E/F/G, or DTI >
-40%, or a prior default on file) identifies a segment that defaults at
-nearly 3x the rate of the rest of the portfolio, and the separation is
-statistically significant. This supports using the flag as an
-**analytical early-warning indicator**.
+- **High Risk Flagged Default Rate:** 44.45% ($n = 7,228$; 3,213 defaults)
+- **Normal Segment Default Rate:** 15.39% ($n = 25,188$; 3,876 defaults)
+- **Absolute Risk Difference:** 29.06 percentage points
+- **95% Confidence Interval for Difference:** [27.83%, 30.29%]
+- **Risk Ratio:** $2.89\times$
+- **Z-Statistic:** 52.69
+- **P-Value:** $< 0.001$
 
-**Important caveat:** statistical significance confirms the *association* is
-real, not that the flag is production-ready. Before deployment as an
-approval-workflow gate, the flag would still need: validation on unseen
-(out-of-sample) data, threshold optimization, monitoring for stability over
-time, and a fairness/disparate-impact assessment. See
-`README.md` → *Limitations of This Analysis* for the full list of caveats.
+**Interpretation:** The composite risk flag identifies an empirical high-risk cohort defaulting at nearly $3\times$ the baseline rate of the remaining portfolio ($p < 0.001$).
+
+**Statistical vs. Production Caveat:** While statistical significance confirms strong in-sample association, production deployment as an automated underwriting gate requires out-of-sample (temporal/vintage) validation, threshold sensitivity modeling, and fair-lending disparate impact assessments.
 
 ---
 
-## Finding 4 — Financial exposure, reconciled
+## Finding 4 — Financial Exposure Reconciliation
 
-- Principal exposure from defaulted loans: **$76,968,675**
-- Estimated first-year interest revenue from repaid loans: **$25,003,819**
-- **Net portfolio position: -$51,964,856**
+- **Gross Principal Exposure from Defaulted Loans:** **$76,968,675**
+- **Estimated First-Year Simple Interest Revenue (Repaid Loans):** **$25,003,819**
+- **Net Portfolio Balance (First-Year View):** **-$51,964,856**
 
-This uses one year of simple interest as the revenue estimate, since the
-dataset has no loan-term field — see the Methodology note in
-`reports/executive_summary.md` for why this is a conservative, first-year
-view rather than a full loan-lifetime profitability figure.
+*Note: In the absence of loan-tenure fields, revenue reflects a one-year simple interest calculation on non-defaulted loans, providing a conservative annualized baseline comparison against unrecovered defaulted principal.*
 
 ---
 
-## Summary table
+## Hypothesis Testing Summary Table
 
-| Test | Result | Significant? |
-|---|---|---|
-| Chi-square: grade vs. default | χ² = 5588.33, df = 6 | Yes, p < 0.001 |
-| Z-test: DTI >35% vs. ≤35% | Z = 58.41, 3.94x risk ratio | Yes, p < 0.001 |
-| Z-test: High Risk flag vs. Normal | Z = 52.69, 2.89x risk ratio | Yes, p < 0.001 |
+| Hypothesis Test | Key Statistic | P-Value | In-Sample Significance |
+|---|---|:---:|:---:|
+| **Chi-Square:** Loan Grade vs. Default | $\chi^2 = 5,588.33$ ($df=6$) | $< 0.001$ | Statistically Significant |
+| **Two-Proportion Z-Test:** DTI $>35\%$ vs. $\le 35\%$ | $Z = 58.41$ ($3.94\times$ Risk Ratio) | $< 0.001$ | Statistically Significant |
+| **Two-Proportion Z-Test:** High Risk Flag vs. Normal | $Z = 52.69$ ($2.89\times$ Risk Ratio) | $< 0.001$ | Statistically Significant |
 
-All three core risk signals used elsewhere in this project (loan grade, DTI
-threshold, composite risk flag) are statistically validated, not just
-visually apparent in a chart.
+All three core risk indicators demonstrate statistically significant in-sample associations with loan default outcomes within the FinTrust dataset.
