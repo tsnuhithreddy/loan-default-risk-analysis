@@ -1,45 +1,115 @@
-# SQL Findings
+# SQL Business Intelligence Findings — FinTrust Lending Co.
 
-This document summarizes the key business insights obtained from the SQL analysis performed on the cleaned credit risk dataset.
+**Analyst:** Telukala Snuhith Reddy  
+**Database:** `fintrust_lending` (MySQL 8.0) | 32,416 records post-cleaning  
+**Methodology Note:** These findings summarize descriptive metrics and aggregations derived from the 28 SQL business intelligence queries. They describe historical associations within the portfolio rather than out-of-sample predictive models.
 
-## Business Insights
+---
 
-Finding 1 — Grade G and F are destroying the portfolio
-Grade G has a 98.44% default rate — meaning for every 100 Grade G loans approved, 98 will default. Grade F is 70.54%. Grade E is 64.49%. These three grades alone represent the majority of FinTrust's default losses in absolute dollar terms.
-Business implication: FinTrust's internal grading model is working correctly — it correctly identifies bad borrowers. The problem is the company is still approving them. The model flags them as high risk and the credit team approves them anyway.
+### Finding 1 — Higher-Risk Grades (E, F, G) Generate Severe Negative Net Margins
 
-Finding 2 — Prior default is the strongest single predictor
-Borrowers with a prior default on file default at 37.87% — compared to 18.43% for clean borrowers. That is 2.06x more likely to default. This is the single most powerful binary predictor in the entire dataset. One column — Y or N — more than doubles default probability.
-Business implication: Every application where cb_person_default_on_file = Y should trigger mandatory manual review regardless of loan grade. Currently FinTrust treats this flag as one of many inputs. It should be treated as a near-automatic red flag.
+SQL analysis confirms strong monotonic risk ordering across loan grades:
+- **Grade A:** 9.96% default rate ($n = 10,653$)
+- **Grade B:** 16.32% default rate ($n = 10,351$)
+- **Grade C:** 21.05% default rate ($n = 6,399$)
+- **Grade D:** 59.06% default rate ($n = 3,630$)
+- **Grade E:** 64.49% default rate ($n = 966$)
+- **Grade F:** 70.54% default rate ($n = 241$)
+- **Grade G:** 98.44% default rate ($n = 64$)
 
-Finding 3 — Three loan intents consistently exceed the average default rate
-Debt Consolidation (28.68%), Medical (26.76%), and Home Improvement (26.15%) all exceed the portfolio average of 21.87%. Debt Consolidation is particularly concerning — a borrower consolidating existing debt is already financially stressed before taking this loan.
-Business implication: These three intents should carry stricter approval conditions — minimum Grade C, DTI below 30%, and no prior default on file. Approving a Debt Consolidation loan for a Grade E borrower is a near-certain loss.
+**Business Implication:** The grading framework successfully differentiates risk tiers. However, in Grades E, F, and G, principal write-offs vastly exceed first-year interest revenue, resulting in substantial net dollar losses.
 
-Finding 4 — DTI ratio is a reliable default predictor
-Borrowers in the Critical DTI tier (loan_percent_income above 0.50) default at significantly higher rates than Low DTI borrowers. The industry standard threshold of 35% DTI appears to be correctly placed — default rates jump meaningfully above this level.
-Business implication: FinTrust's existing 35% DTI threshold is validated by the data. The recommendation is to enforce it more strictly rather than approve exceptions above it.
+---
 
-Finding 5 — Default risk is U-shaped by age, not linear
-Default rate does not decline steadily with age. Senior borrowers (50+) show the highest default rate (25.35%), with Young borrowers under 25 close behind (23.34%) — both above the 21.9% portfolio average. Borrowers aged 25–50 default least often (20.55–20.98%).
-Business implication: Extra scrutiny should apply to both ends of the age range, not just applicants under 25. Loan applications from borrowers under 25 or over 50 should require higher minimum grades (B or above) and stricter DTI limits than the 25–50 segment.
+### Finding 2 — Prior Default History is the Strongest Bivariate Risk Differentiator
 
-Finding 6 — Renters default more than homeowners
-RENT shows the highest default rate among home ownership categories. OWN shows the lowest. This aligns with financial theory — homeowners have a tangible asset and typically more financial stability.
-Business implication: Home ownership status should be weighted more heavily in FinTrust's internal scoring model. A renter applying for a Grade D loan is significantly riskier than a homeowner applying for the same grade.
+Query 15 shows that borrowers with a historical default on file default at **37.87%**, compared to **18.43%** for borrowers with clean credit bureau records—a **2.05x risk ratio**.
+- **Business Implication:** Bureau-reported default history represents the strongest single bivariate categorical signal in the dataset. Applications with `cb_person_default_on_file = 'Y'` warrant mandatory credit officer review rather than automated approval.
 
-Finding 7 — Some grades are loss-making despite revenue generation
-Certain higher-risk grades generate significant interest revenue but the default losses exceed that revenue. A grade that charges 20% interest but loses 70% of principal on defaults is net negative for the business.
-Business implication: FinTrust must calculate risk-adjusted return by grade — not just interest rate. Revenue from repaid loans in Grade F and G does not compensate for the principal lost on defaulted ones.
+---
 
-Finding 8 — High risk composite flag captures a dangerous segment
-Borrowers flagged as High Risk (Grade E/F/G OR DTI above 40% OR prior default on file) show a default rate more than double the portfolio average. This segment represents a significant portion of total applications.
-Business implication: The composite risk flag from Q10 can be operationalised as an automatic review trigger in FinTrust's loan approval workflow. Any application triggering this flag should not be auto-approved.
+### Finding 3 — Three Loan Intents Exceed the Portfolio Average Default Rate
 
-Finding 9 — Grade model is well-calibrated at the extremes but fails in the middle
-Grade A and Grade G perform roughly as expected. The middle grades C, D, and E show actual default rates that exceed their expected ranges from the risk scoring matrix. The model underestimates risk for these grades.
-Business implication: FinTrust's internal credit scoring model needs recalibration specifically for Grade C, D, and E borrowers. These grades are being approved with insufficient scrutiny because the model incorrectly classifies them as moderate risk.
+Query 3 identifies three loan purposes with observed default rates above the portfolio average of 21.87%:
+- **Debt Consolidation:** 28.68% (1,496 defaults / 5,217 loans)
+- **Medical:** 26.70% (1,402 defaults / 5,251 loans)
+- **Home Improvement:** 26.15% (734 defaults / 2,807 loans)
 
-Finding 10 — Income quartile analysis confirms income is a reliable predictor
-Quartile 1 (lowest income) defaults at the highest rate. Quartile 4 (highest income) defaults at the lowest rate. The relationship is consistent and monotonic — each higher income quartile defaults less than the one below it.
-Business implication: Income verification should be strengthened in the approval process. Since income is self-reported in this dataset, FinTrust should require bank statement verification for all low-income applicants.
+**Business Implication:** Debt consolidation applicants often carry pre-existing debt burdens. Stricter debt-to-income caps and grade prerequisites (e.g., Grade C or above) should be evaluated for these purpose categories.
+
+---
+
+### Finding 4 — Loan-to-Income (DTI) Ratio Shows Sharp Risk Escalation Above 35%
+
+Query 8 and Query 27 evaluate borrower leverage tiers:
+- **Low DTI (<20%):** 12.87% default rate
+- **Medium DTI (20–34%):** 21.68% default rate
+- **High DTI (35–49%):** 69.87% default rate
+- **Critical DTI (≥50%):** 78.43% default rate
+
+**Business Implication:** Observed default rates more than triple when DTI crosses 35%. This empirical step-change supports establishing 35% DTI as a primary candidate threshold for mandatory review.
+
+---
+
+### Finding 5 — Default Risk Exhibits a Non-Linear Age Distribution
+
+Query 6 reveals an empirical U-shaped age pattern:
+- **Senior Borrowers (>50):** 25.35% default rate ($n = 852$)
+- **Young Borrowers (<25):** 23.34% default rate ($n = 14,484$)
+- **Core Career Borrowers (25–50):** 20.55%–20.98% default rate ($n = 17,080$)
+
+**Business Implication:** Underwriting scrutiny should account for distinct life-stage risk drivers at both age extremes rather than assuming risk declines linearly with age.
+
+---
+
+### Finding 6 — Home Ownership Status is Strongly Associated with Default Outcomes
+
+Query 4 and Query 24 break down loan outcomes by housing tenure:
+- **Renters:** 31.52% default rate ($n = 16,368$; 5,159 defaults)
+- **Mortgage Holders:** 12.63% default rate ($n = 13,382$; 1,690 defaults)
+- **Homeowners (Own):** 7.37% default rate ($n = 2,563$; 189 defaults)
+- **Other:** 49.06% default rate ($n = 103$; 51 defaults)
+
+**Business Implication:** Housing equity and tenure reflect broader financial stability. Renter applicants in higher-risk loan grades exhibit compounded default rates.
+
+---
+
+### Finding 7 — Risk-Adjusted Revenue Analysis Highlights Loss-Making Tiers
+
+Query 20 reconciles first-year simple interest revenue against defaulted principal exposure:
+- **Grades A, B, and C:** Net positive baseline margin (interest earned exceeds defaulted principal).
+- **Grades D, E, F, and G:** Net negative margin (defaulted principal exceeds first-year interest revenue).
+
+**Business Implication:** Lending products in lower credit tiers cannot rely solely on higher nominal interest rates to compensate for extreme default frequencies.
+
+---
+
+### Finding 8 — Composite Risk Flag Captures an Empirical High-Risk Segment
+
+Query 10 aggregates the composite analytical risk flag (`Grade ∈ {E,F,G}` OR `DTI > 40%` OR `Prior Default = 'Y'`):
+- **High Risk Cohort:** 44.45% default rate ($n = 7,228$; 3,213 defaults)
+- **Normal Cohort:** 15.39% default rate ($n = 25,188$; 3,876 defaults)
+
+**Business Implication:** The composite flag successfully isolates an empirical cohort responsible for 45.3% of all portfolio defaults from 22.3% of total loan volume.
+
+---
+
+### Finding 9 — Middle Loan Grades Diverge from Reference Matrix Expectations
+
+Query 13 compares observed default rates against the simulated `risk_scoring_matrix`:
+- **Grades A & B:** Perform in line with Low Risk benchmark expectations (<8.0% and 8.0–20.0%).
+- **Grades C & D:** Show actual default rates (21.05% and 59.06%) exceeding Medium Risk benchmark ranges (8.0–20.0%).
+
+**Business Implication:** The middle grades exhibit significant performance drift relative to benchmark ranges, suggesting the need for tighter underwriting criteria in Grade C and D segments.
+
+---
+
+### Finding 10 — Income Quartile Analysis Confirms Strong Monotonic Association
+
+Query 23 evaluates borrower distribution across income quartiles:
+- **Quartile 1 ($4k–$38.5k):** 31.95% default rate
+- **Quartile 2 ($38.5k–$55k):** 24.38% default rate
+- **Quartile 3 ($55k–$79.2k):** 18.06% default rate
+- **Quartile 4 ($79.2k–$140.2k):** 13.08% default rate
+
+**Business Implication:** Income exhibits a clear, monotonic inverse association with default rate. Enhanced documentation verification is recommended for applicants in Quartile 1.
