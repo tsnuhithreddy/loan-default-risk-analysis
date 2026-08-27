@@ -1,3 +1,6 @@
+-- FinTrust Lending Co. — Analytical Views
+-- Phase 1: View Setup
+
 USE fintrust_lending;
 
 CREATE OR REPLACE VIEW risk_flagged_loans AS
@@ -7,6 +10,6 @@ SELECT *,
           OR loan_percent_income > 0.40
           OR cb_person_default_on_file = 'Y'
         THEN 'High Risk'
-        ELSE 'Normal Borrowers'
+        ELSE 'Normal'
     END AS risk_flag
 FROM credit_risk;
