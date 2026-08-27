@@ -47,11 +47,13 @@ The maximum possible employment length was calculated as:
 
 ### 4. Missing Employment-Length Flagging & Imputation
 
-Missing values in `person_emp_length` were tracked before imputation so that the distinction between known zero employment and unrecorded employment is preserved.
+Missing values in `person_emp_length` were tracked before imputation to preserve the distinction between known zero employment and unrecorded employment information.
 
-- **Missing values identified:** 887 records (2.74% of clean rows)
-- **Action:** Created an indicator column `is_unemployed` (`1` if originally missing, `0` if recorded).
+- **Raw dataset missingness:** 895 records (2.75% of raw records)
+- **Cleaned dataset missingness:** 887 records (2.74% of post-deduplication records)
+- **Action:** Created an indicator column `emp_length_missing` (`1` if originally missing, `0` if recorded).
 - **Imputation:** All missing `person_emp_length` values were filled with `0.0`.
+- **Note:** This variable indicates unrecorded employment information at the time of application; it should not be assumed to represent confirmed unemployment in all instances.
 
 ---
 
@@ -59,7 +61,8 @@ Missing values in `person_emp_length` were tracked before imputation so that the
 
 Missing values in `loan_int_rate` were imputed using group-level medians segmented by `loan_grade` to reflect the risk-based pricing tier of each loan.
 
-- **Missing values identified:** 3,095 records (9.55% of clean rows)
+- **Raw dataset missingness:** 3,116 records (9.56% of raw records)
+- **Cleaned dataset missingness:** 3,095 records (9.55% of post-deduplication records)
 - **Imputation medians by grade:**
   - **Grade A:** 7.49%
   - **Grade B:** 10.99%
@@ -106,4 +109,5 @@ A final automated validation block was executed to guarantee data integrity:
 - **Age boundaries:** All values strictly within [20, 80].
 - **Employment length:** All values >= 0.0 and <= (person_age - 16).
 - **Income boundaries:** All values <= $140,232.
+- **Engineered Flag:** `emp_length_missing` strictly binary (`0` or `1`).
 - **Final dataset dimensions:** 32,416 rows × 13 columns.
