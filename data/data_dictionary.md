@@ -12,7 +12,7 @@ This document describes the fields in the FinTrust credit-risk dataset, includin
 | `person_income` | int | 0.00% | 4,000–6,000,000 | 4,000–140,232 | Values above IQR upper fence ($140,232) capped | Borrower characteristic |
 | `person_home_ownership` | str | 0.00% | MORTGAGE / OWN / RENT / OTHER | Same categories | Whitespace stripped and values uppercased | Borrower characteristic |
 | `person_emp_length` | float | 2.75% | 0.0–123.0 | 0.0–41.0 | Values above `person_age − 16` capped; missing values filled with 0.0 | Borrower characteristic |
-| `is_unemployed` | int | — | — | 0 / 1 | Data-quality indicator: 1 if employment length was originally missing, 0 otherwise | Data-quality indicator |
+| `emp_length_missing` | int | — | — | 0 / 1 | Data-quality indicator: 1 if employment length was originally missing, 0 otherwise | Data-quality indicator |
 | `loan_intent` | str | 0.00% | 6 categories | Same 6 categories | Whitespace stripped and values uppercased | Loan characteristic |
 | `loan_grade` | str | 0.00% | A–G | A–G | Whitespace stripped and values uppercased | Credit-risk indicator |
 | `loan_amnt` | int | 0.00% | 500–35,000 | 500–35,000 | No cleaning required | Loan characteristic |
@@ -22,13 +22,13 @@ This document describes the fields in the FinTrust credit-risk dataset, includin
 | `cb_person_default_on_file` | str | 0.00% | Y / N | Y / N | Whitespace stripped and values uppercased | Prior credit-default indicator |
 | `cb_person_cred_hist_length` | int | 0.00% | 2–30 | 2–30 | No cleaning required | Credit-history characteristic |
 
-> **Note:** Raw ranges represent observed values in the original Kaggle dataset. Cleaned ranges reflect the result of the reproducible cleaning pipeline.
+> **Note on Ranges:** Raw ranges represent observed values in the raw dataset. Cleaned ranges reflect the mathematical result of the outlier capping and data cleaning rules applied to this dataset, rather than universal institutional underwriting policy limits.
 
 ---
 
 ## Engineered Cleaning Feature
 
-### `is_unemployed`
+### `emp_length_missing`
 
 This binary indicator is created during the data-cleaning process before missing `person_emp_length` values are filled with `0.0`.
 
