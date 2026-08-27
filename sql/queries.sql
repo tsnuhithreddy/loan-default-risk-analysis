@@ -15,7 +15,7 @@ SELECT COUNT(*) AS total_loans,
 FROM credit_risk;
 
 -- Q2: Default rate by loan grade
--- Business question: Which loan grades are performing worst and what is the default rate within each grade?
+-- Business question: Which loan grades show the highest observed default rates within FinTrust's portfolio?
 SELECT loan_grade,
        COUNT(*) AS total_loans,
        SUM(loan_status) AS total_defaults,
@@ -25,7 +25,7 @@ GROUP BY loan_grade
 ORDER BY default_rate DESC;
 
 -- Q3: Default rate by loan intent
--- Business question: Which loan purposes carry the highest default risk for FinTrust?
+-- Business question: How does the observed default rate vary across different loan purposes?
 SELECT loan_intent,
        COUNT(*) AS total_loans,
        SUM(loan_status) AS total_defaults,
@@ -35,7 +35,7 @@ GROUP BY loan_intent
 ORDER BY default_rate DESC;
 
 -- Q4: Default rate by home ownership
--- Business question: Does home ownership status reliably predict default risk?
+-- Business question: How does default rate vary across home ownership categories?
 SELECT person_home_ownership,
        COUNT(*) AS total_loans,
        ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
@@ -44,7 +44,7 @@ GROUP BY person_home_ownership
 ORDER BY default_rate DESC;
 
 -- Q5: High volume high risk loan intents
--- Business question: Which loan purposes are simultaneously high volume and high risk?
+-- Business question: Which loan purposes combine high volume (>5,000 loans) with above-average default risk (>20%)?
 SELECT loan_intent,
        COUNT(*) AS total_loans,
        SUM(loan_status) AS total_defaults,
@@ -54,7 +54,7 @@ GROUP BY loan_intent
 HAVING COUNT(*) > 5000 AND AVG(loan_status) * 100.0 > 20;
 
 -- Q6: Age group segmentation
--- Business question: Which age group carries the highest default risk at FinTrust?
+-- Business question: Which age group segment carries the highest observed default rate?
 SELECT 
     CASE
         WHEN person_age < 25 THEN 'Young'
@@ -70,7 +70,7 @@ GROUP BY age_group
 ORDER BY default_rate DESC;
 
 -- Q7: Income band analysis
--- Business question: At what income level does default risk drop significantly?
+-- Business question: How does default rate trend across borrower income brackets?
 SELECT
     CASE 
         WHEN person_income < 30000 THEN 'Low'
@@ -86,7 +86,7 @@ GROUP BY income_band
 ORDER BY default_rate DESC;
 
 -- Q8: DTI risk classification
--- Business question: Does FinTrust's 35% DTI threshold correctly identify high-risk borrowers?
+-- Business question: How does default risk escalate across Loan-to-Income (DTI) ratio tiers?
 SELECT
     CASE 
         WHEN loan_percent_income < 0.20 THEN 'Low'
@@ -102,10 +102,10 @@ GROUP BY dti_risk
 ORDER BY default_rate DESC;
 
 -- Q9: Employment stability classification
--- Business question: Does employment stability predict loan default probability?
+-- Business question: How does default rate vary across employment tenure tiers and unrecorded employment info?
 SELECT
     CASE
-        WHEN is_unemployed = 1 THEN 'Unemployed'
+        WHEN emp_length_missing = 1 THEN 'Missing Info'
         WHEN person_emp_length < 2 THEN 'New'
         WHEN person_emp_length BETWEEN 2 AND 4.9 THEN 'Developing'
         WHEN person_emp_length BETWEEN 5 AND 9.9 THEN 'Stable'
@@ -119,7 +119,7 @@ GROUP BY employment_stability
 ORDER BY default_rate DESC;
 
 -- Q10: Composite risk flag
--- Business question: How many borrowers meet FinTrust's high-risk criteria and what is their default rate?
+-- Business question: How many borrowers meet FinTrust's analytical high-risk criteria and what is their default rate?
 SELECT risk_flag,
        COUNT(*) AS total_borrowers,
        SUM(loan_status) AS total_defaults,
@@ -129,7 +129,7 @@ GROUP BY risk_flag
 ORDER BY default_rate DESC;
 
 -- Q11: Grade with reference data
--- Business question: How does actual default rate compare to FinTrust's internal grade classification?
+-- Business question: How does actual default performance compare to internal risk categories in the reference table?
 SELECT
     l.grade AS loan_grade,
     l.risk_category,
@@ -147,7 +147,7 @@ ORDER BY
     l.grade;
 
 -- Q12: Interest rate vs benchmark
--- Business question: Are FinTrust's interest rates appropriately priced for the risk level of each grade?
+-- Business question: Are observed interest rates positioned within benchmark typical ranges for each grade?
 SELECT l.grade,
        l.typical_rate_min,
        l.typical_rate_max,
@@ -164,7 +164,7 @@ GROUP BY l.grade, l.typical_rate_min, l.typical_rate_max
 ORDER BY l.grade;
 
 -- Q13: Risk tier assignment
--- Business question: How do actual default rates compare to expected ranges in FinTrust's risk scoring matrix?
+-- Business question: How do observed default rates compare to expected ranges in the risk scoring matrix?
 SELECT r.risk_tier,
        r.tier_description,
        COUNT(*) AS total_loans,
@@ -190,7 +190,7 @@ GROUP BY
 ORDER BY default_rate DESC;
 
 -- Q14: Financial exposure by grade
--- Business question: Which loan grades are costing FinTrust the most money in absolute default losses?
+-- Business question: Which loan grades account for the largest absolute default exposure in dollars?
 SELECT loan_grade,
        SUM(loan_amnt) AS total_loan_amount,
        SUM(CASE WHEN loan_status = 1 THEN loan_amnt ELSE 0 END) AS defaulted_amount,
@@ -200,7 +200,7 @@ GROUP BY loan_grade
 ORDER BY defaulted_amount DESC;
 
 -- Q15: Prior default impact
--- Business question: How much more likely is a borrower with a prior default to default again with FinTrust?
+-- Business question: What is the observed default rate difference between borrowers with vs. without prior default history?
 WITH default_by_prior AS (
     SELECT cb_person_default_on_file,
            COUNT(*) AS total_loans,
@@ -222,7 +222,7 @@ CROSS JOIN baseline b
 ORDER BY d.cb_person_default_on_file;
 
 -- Q16: CTE — default rate by grade with ranking
--- Business question: Which grade ranks as the single highest default risk in FinTrust's portfolio?
+-- Business question: What is the ranked ordering of default rates across all 7 loan grades?
 WITH grade_stats AS (
     SELECT loan_grade,
            ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
@@ -235,7 +235,7 @@ SELECT loan_grade,
 FROM grade_stats;
 
 -- Q17: CTE — above average default segments
--- Business question: Which loan intents consistently exceed FinTrust's overall average default rate?
+-- Business question: Which loan intents exceed FinTrust's overall average portfolio default rate?
 WITH avg_default_rate AS (
     SELECT loan_intent,
            ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
@@ -254,7 +254,7 @@ CROSS JOIN overall_avg o
 WHERE a.default_rate > o.overall_default;
 
 -- Q18: CTE — financial exposure summary with cumulative running total
--- Business question: How does FinTrust's total default exposure accumulate as loan grade quality decreases?
+-- Business question: How does default dollar exposure accumulate as grade risk increases?
 WITH grade_details AS (
     SELECT loan_grade,
            SUM(loan_amnt) AS total_loan_amount,
@@ -271,7 +271,7 @@ FROM grade_details
 ORDER BY total_defaulted_amount DESC;
 
 -- Q19: CTE — high risk borrower profile
--- Business question: What does the typical high-risk FinTrust borrower look like demographically?
+-- Business question: What are the average characteristics of borrowers in the high-risk segment (Grades E-G with prior default)?
 WITH profile AS (
     SELECT * 
     FROM credit_risk
@@ -296,7 +296,7 @@ FROM intent
 WHERE rnk = 1;
 
 -- Q20: CTE — revenue vs loss analysis
--- Business question: Which loan grades are actually profitable for FinTrust after accounting for default losses?
+-- Business question: What is the first-year interest revenue vs defaulted principal comparison by loan grade?
 WITH revenue_per_grade AS (
     SELECT loan_grade,
            ROUND(SUM(loan_amnt * loan_int_rate / 100.0), 2) AS expected_revenue
@@ -340,7 +340,7 @@ FROM (
 ORDER BY risk_rank;
 
 -- Q22: Window function — running total of default exposure
--- Business question: How does FinTrust's cumulative default loss build from Grade A through Grade G?
+-- Business question: How does cumulative default dollar loss accumulate from Grade A through Grade G?
 SELECT loan_grade,
        COUNT(*) AS defaulted_loans,
        SUM(loan_amnt) AS default_exposure,
@@ -351,7 +351,7 @@ GROUP BY loan_grade
 ORDER BY loan_grade;
 
 -- Q23: Window function — income quartile analysis
--- Business question: Do higher income borrowers consistently default less across all income levels?
+-- Business question: How does default rate distribute across borrower income quartiles?
 SELECT income_quartile,
        MIN(person_income) AS quartile_income_min,
        MAX(person_income) AS quartile_income_max,
@@ -367,7 +367,7 @@ GROUP BY income_quartile
 ORDER BY income_quartile;
 
 -- Q24: Window function — top 3 riskiest loan intents per home ownership type
--- Business question: Within each home ownership group, which loan purposes are the most dangerous?
+-- Business question: Within each home ownership group, which 3 loan purposes have the highest observed default rates?
 SELECT person_home_ownership,
        loan_intent,
        total_loans,
@@ -386,7 +386,7 @@ WHERE intent_rank <= 3
 ORDER BY person_home_ownership, intent_rank;
 
 -- Q25: Window function — grade average vs individual loan outcome
--- Business question: Which individual loans were statistical outliers relative to their grade's average default rate?
+-- Business question: What is the deviation between individual loan outcomes and grade-level average default rates?
 SELECT loan_grade,
        loan_amnt,
        loan_status,
@@ -397,7 +397,7 @@ FROM credit_risk
 LIMIT 20;
 
 -- Q26: Executive summary — full portfolio risk analysis
--- Business question: What is the complete picture of FinTrust's loan portfolio performance and what actions are required?
+-- Business question: What is the comprehensive overview of loan volume, defaults, exposure, and benchmark actions?
 WITH grade_summary AS (
     SELECT loan_grade,
            COUNT(*) AS total_loans,
@@ -437,7 +437,7 @@ JOIN risk_scoring_matrix r
 ORDER BY g.default_percentage DESC;
 
 -- Q27: Grade x DTI interaction
--- Business question: How does default risk escalate across DTI tiers within each loan grade?
+-- Business question: How does default rate trend across DTI tiers within each loan grade?
 SELECT loan_grade,
        CASE
            WHEN loan_percent_income < 0.20 THEN 'Low DTI'
