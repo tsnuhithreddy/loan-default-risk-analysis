@@ -1,201 +1,100 @@
-# Executive Summary — Loan Default Risk Analysis
-## FinTrust Lending Co. | Credit Risk Review
+# Executive Summary — Credit Risk Analysis & Portfolio Review
+## FinTrust Lending Co. | Portfolio Risk Review
 ### Prepared by: Telukala Snuhith Reddy, Data Analyst
-### Date: August 2026 | Confidential
+### Scope: 32,416 Historical Loan Records
 
 ---
 
-## Situation
+## Executive Overview
 
-FinTrust Lending Co. is facing a credit risk crisis that is costing the 
-business tens of millions of dollars annually.
+An analysis of 32,416 historical loan records reveals an overall observed default rate of **21.87%** (7,089 defaulted loans), representing **$76.97 million** in defaulted principal exposure against **$310.99 million** in total loan volume.
 
-An analysis of 32,416 historical loan records reveals that 1 in every 
-5 loans approved ends in default. The current default rate of 21.87% is 
-4 to 6 times higher than the NBFC sector's gross NPA range of 3.6%–5.4%.* More critically,
-the interest revenue generated from loans that are repaid — $25 million — 
-does not come close to covering the $77 million lost on loans that default. 
-FinTrust's net portfolio position is negative $51.96 million.
+Estimated first-year simple interest revenue from non-defaulted loans ($25.00 million) is substantially outweighed by defaulted principal ($76.97 million), resulting in an annualized net portfolio position of **-$51.96 million** under a baseline zero-recovery assumption. By comparison, prime NBFC gross non-performing asset (GNPA) benchmarks typically range between 3.6% and 5.4% (CareEdge Ratings, 2025).*
 
-This is not a temporary performance dip. It is a structural problem in 
-how loans are being approved.
+This analysis investigates key empirical drivers of default risk to provide data-driven proposals for credit committee review.
 
 ---
 
-## What the Data Found
+## Key Empirical Findings
 
-**The grading model works — but approvals ignore it.**
+### 1. Loan Grades Demonstrate Strong Risk Rank-Ordering
+Observed default rates escalate monotonically across assigned credit grades:
+- **Grade A:** 9.96%
+- **Grade B:** 16.32%
+- **Grade C:** 21.05%
+- **Grade D:** 59.06%
+- **Grade E:** 64.49%
+- **Grade F:** 70.54%
+- **Grade G:** 98.44%
 
-FinTrust assigns every loan applicant a risk grade from A to G before 
-approving their loan. The data confirms this model is accurate — Grade A 
-borrowers default at 9.96% while Grade G borrowers default at 98.44%. 
-The model correctly identifies who is high risk. The problem is that 
-high-risk loans are being approved anyway.
+The grading model successfully rank-orders borrower risk. However, approvals in Grades E, F, and G generate substantial net dollar losses that nominal interest rates do not offset.
 
-**Three factors predict default more reliably than anything else.**
+### 2. Prior Credit Default is the Strongest Bivariate Indicator
+Borrowers with a historical credit bureau default on file default at **37.87%**, compared to **18.43%** for borrowers with clean records—a **2.05x risk ratio**. This historical indicator provides the strongest single bivariate categorical separation in the portfolio.
 
-First — loan grade. Grades E, F, and G collectively default at rates 
-above 64%. These grades generate more in losses than they earn in interest. 
-They are not high-risk products — they are guaranteed losses.
+### 3. Leverage (DTI Ratio) Exhibits a Sharp Step-Change at 35%
+Default rates increase sharply across Debt-to-Income (DTI) tiers:
+- **$\le 35\%$ DTI:** 18.28% default rate ($n = 30,248$)
+- **$> 35\%$ DTI:** 71.96% default rate ($n = 2,168$)
 
-Second — prior default history. A borrower who has defaulted before is 
-2.06 times more likely to default again. This single piece of information, 
-available from the credit bureau before every approval, is the strongest 
-predictor in the entire dataset.
+This statistically significant divergence ($Z = 58.41, p < 0.001$) identifies 35% DTI as a primary candidate threshold for enhanced manual review.
 
-Third — debt burden. Borrowers whose loan repayment exceeds 35% of their 
-annual income default at nearly 70%. FinTrust has a 35% threshold policy 
-but the data shows it is not being enforced consistently.
-
-**The largest losses are not where you expect them.**
-
-Grade G has the highest default rate at 98.44% — but it causes only $1.1M 
-in losses because few Grade G loans are approved. Grade D, with a 59.06% 
-default rate, causes $23M in losses — the largest of any grade — because 
-far more Grade D loans are approved at higher amounts. Managing total 
-exposure, not just default rate, is critical.
-
-**The business is losing money on 3 out of 7 loan grades.**
-
-Grades E, F, and G all generate more losses than revenue after accounting 
-for defaults. They are not high-yield, high-risk products. They are 
-loss-making products that should either be discontinued or fundamentally 
-repriced.
+### 4. Dollar Exposure is Concentrated in Grade D
+While Grade G exhibits the highest percentage default rate (98.44%), **Grade D accounts for the largest total dollar loss** at **$22.78 million** due to high approval volume (3,630 loans). Portfolio exposure management must balance percentage default rates with absolute dollar volume.
 
 ---
 
-## Financial Summary
+## Financial Reconciliation Summary
 
 | Metric | Value |
 |---|---|
-| Total loans analysed | 32,416 |
-| Total defaulted loans | 7,089 |
-| Overall default rate | 21.87% |
-| NBFC sector gross NPA (benchmark)* | 3.6%–5.4% |
-| Total interest revenue (repaid loans) | $25 million |
-| Total principal lost (defaulted loans) | $77 million |
-| **Net portfolio position** | **-$51.96 million** |
+| Total Loans Analyzed | 32,416 |
+| Total Defaulted Loans | 7,089 |
+| Overall Observed Default Rate | 21.87% |
+| Total Loan Volume Funded | $310.99 million |
+| Gross Defaulted Principal Exposure | $76.97 million |
+| Estimated First-Year Interest Revenue (Repaid Loans) | $25.00 million |
+| **Net Portfolio Position (First-Year View, 0% Recovery)** | **-$51.96 million** |
+| NBFC Sector Gross NPA Benchmark Range* | 3.6%–5.4% |
 
 ---
 
-## What Must Be Done
+## Analytical Recommendations for Credit Committee Review
 
-Six actions are recommended in priority order.
+The following candidate policies are proposed for institutional evaluation:
 
-**Action 1 — Suspend Grade G approvals. Immediately.**
-Grade G borrowers default at 98.44%. There is no scenario where approving 
-these loans benefits the business. Every Grade G approval is a near-certain 
-write-off. This is the single fastest action available to stop ongoing losses.
-
-**Action 2 — Treat prior default as a hard stop.**
-Any applicant with a prior default on their credit bureau record should be 
-required to meet stricter minimum criteria — Grade C or above and debt burden 
-below 25% — before any approval is considered. This flag should trigger 
-automatic escalation to a senior credit officer. It must never be part of 
-a standard auto-approval workflow.
-
-**Action 3 — Make the 35% debt threshold a hard rule, not a guideline.**
-Currently the data shows borrowers above 35% debt-to-income being approved 
-at significant volume. Default rates above this threshold exceed 69%. Any 
-exception above 35% must require documented board-level approval.
-
-**Action 4 — Apply stricter criteria to Debt Consolidation loans.**
-Borrowers seeking to consolidate existing debt are already financially 
-stressed. This intent category defaults at 28.68% — the highest of any 
-loan purpose. A borrower who cannot manage their existing debts should not 
-automatically qualify for additional lending. Minimum Grade C and debt 
-burden below 30% should be required.
-
-**Action 5 — Implement the Early Warning System.**
-Analysis has produced a composite risk flag that identifies high-risk 
-applicants before approval using three criteria — loan grade, debt burden, 
-and prior default history. In testing, this flag correctly separates 
-high-risk borrowers who default at 44.5% from normal borrowers who default 
-at 15.4%. Routing all flagged applications to manual review rather than 
-auto-approval is projected to reduce portfolio losses by $20 to $25 million.
-
-**Operational requirement:** Implementing mandatory manual review for all 
-flagged applications requires an estimated 2 additional credit officer FTEs 
-(assuming ~602 flagged applications/month and a 20-minute review per 
-application). This should be budgeted alongside the projected $20–25M loss 
-reduction as the cost side of this recommendation.
-
-**Action 6 — Review Grade D lending volume and limits.**
-Grade D is the single largest source of default losses in absolute dollars 
-at $23 million — not because of the highest default rate, but because of 
-high approval volume at significant loan amounts. Capping Grade D approvals 
-at 15% of monthly volume and requiring collateral for Grade D loans above 
-$15,000 would meaningfully reduce this exposure.
+1. **Grade G Tier Review:** Consider discontinuing approvals in Grade G, where 98.44% of loans defaulted resulting in -$1.10M in net margin contribution.
+2. **Prior Default Workflow Triage:** Route applications with `cb_person_default_on_file = 'Y'` to mandatory senior credit officer review with candidate minimum standards (e.g., Grade C or above).
+3. **Enhanced Leverage Review at 35% DTI:** Designate 35% DTI as a candidate threshold for required income documentation and manual underwriting review.
+4. **Purpose-Specific Underwriting:** Introduce tighter leverage thresholds on Debt Consolidation loans (28.68% default rate), recognizing pre-existing borrower debt burdens.
+5. **Grade D Exposure Controls:** Evaluate exposure limits, co-borrower requirements, or stricter affordability limits on higher-balance Grade D applications.
+6. **Early Warning Flag Implementation:** Utilize the composite risk flag (`Grade ∈ {E,F,G}` OR `DTI > 40%` OR `Prior Default = 'Y'`) to prioritize applications for manual underwriting queues.
 
 ---
 
-## Trade-Offs Considered
+## Simulated Trade-Off Analysis (In-Sample Counterfactual Modeling)
 
-Every recommendation in this report has a cost as well as a benefit. Below is 
-the net financial impact of each major action, accounting for the interest 
-revenue given up by declining loans that would otherwise have repaid.
+To evaluate the trade-offs of proposed tightening measures, the following table models in-sample counterfactual scenarios comparing avoided default losses against forgone first-year interest revenue:
 
-| Action | Revenue Forgone | Loss Avoided | Net Benefit |
-|----------|----------|---------|----------|
-| Suspend Grade G approvals | $307 | $1,098,925 | +$1,098,618 |
-| Suspend Grade F approvals | $195,206 | $2,496,875 | +$2,301,669 |
-| Enforce 35% DTI hard ceiling | $1,222,679 | $24,958,475 | +$23,735,796 |
+| Simulated Action | Revenue Forgone | Loss Avoided | Net In-Sample Benefit |
+|---|---|---|---|
+| Exclude Grade G Approvals | $307 | $1,098,925 | +$1,098,618 |
+| Exclude Grade F Approvals | $195,206 | $2,496,875 | +$2,301,669 |
+| Exclude Approvals with DTI > 35% | $1,222,679 | $24,958,475 | +$23,735,796 |
 
-In all three cases the loss avoided is one to two orders of magnitude larger 
-than the revenue forgone — meaning these recommendations hold up even after 
-accounting for their opportunity cost, not just their headline loss-avoidance 
-figure.
-
-## Projected Impact of Recommended Actions
-
-If all six actions are implemented:
-
-| Action | Projected Loss Reduction |
-|---|---|
-| Suspend Grade G | $1.1M ongoing exposure eliminated |
-| Prior default hard stop | 3–4% reduction in portfolio default rate |
-| DTI hard ceiling | Eliminates highest-risk approvals |
-| Early Warning System | $20–25M projected loss reduction |
-| Grade D volume cap | Reduces largest absolute exposure |
-| **Total projected impact** | **$25–30M reduction in annual losses** |
-
-These projections are conservative. They assume partial implementation 
-and do not account for second-order benefits such as improved credit 
-quality of the overall portfolio and reduced cost of collections.
+*Note: These simulations reflect static in-sample calculations under a baseline zero-recovery assumption. They do not account for potential borrower behavioral changes, marketing acquisition costs, or macroeconomic shifts.*
 
 ---
 
-## Conclusion
+## Conclusion & Limitations
 
-FinTrust's core lending business is viable — Grades A and B borrowers 
-repay reliably and generate positive returns. The crisis is concentrated 
-in the higher-risk grades and in the absence of consistent enforcement of 
-existing risk policies.
+The analysis indicates that FinTrust's core lending in lower-risk grades (A and B) generates positive net returns, while portfolio losses are heavily concentrated in higher-risk grades, elevated DTI tiers, and repeat-default applicants.
 
-The data does not suggest that FinTrust needs to fundamentally change 
-what it does. It needs to change who it approves. The tools to make 
-better decisions — loan grade, DTI ratio, credit bureau history — are 
-already available at the point of every approval decision. They are 
-simply not being used with sufficient discipline.
-
-The six recommendations in this report, if implemented together, are 
-projected to reduce annual default losses by $25 to $30 million and 
-bring FinTrust's default rate from 21.87% toward the 12 to 15% range 
-within 12 months — and toward the industry standard of 3 to 5% within 
-24 months with continued policy discipline.
-
-The cost of inaction is $52 million per portfolio cycle. The cost of 
-implementation is process change and stricter credit discipline. 
-The choice is clear.
+**Methodology & Data Limitations:**
+- **Observational Snapshot:** The dataset represents a static historical snapshot without origination dates, preventing vintage cohort tracking, seasonality modeling, or forward-looking time-series forecasts.
+- **Zero-Recovery Assumption:** Loss figures assume 0% recovery post-default; modeled recoveries would reduce net loss figures.
+- **Compliance & Fair Lending:** Any adopted underwriting cutoffs must undergo fair-lending review to prevent unintended disparate impacts on protected classes.
 
 ---
 
-*This analysis is based on 32,416 historical loan records. 
-All financial figures are derived from loan principal amounts 
-and stated interest rates. Recovery rates assumed at zero 
-(conservative estimate). Industry benchmark: NBFC sector gross NPA 
-of 3.6%–5.4%, sourced from CareEdge Ratings' NBFC-Microfinance 
-Industry Report (2025) and ICRA (2021). Note: GNPA (90+ days 
-past due) is a different metric from this dataset's default flag 
-(a completed default outcome), so the comparison is directional, 
-not a precise like-for-like benchmark.*
+*\*Benchmark note: NBFC gross NPA benchmark (3.6%–5.4%) sourced from CareEdge Ratings (2025) and ICRA (2021). GNPA (90+ days past due) is a delinquency metric whereas `loan_status` represents a completed default outcome; the comparison is directional.*
