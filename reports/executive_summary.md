@@ -1,14 +1,3 @@
-Both of those updates make the report exceptionally rigorous and defensive.
-
-Here is the exact full text for **`reports/executive_summary.md`** with both refinements applied:
-
----
-
-### Exact Full Text for `reports/executive_summary.md`:
-
-Copy and replace the entire content of **`reports/executive_summary.md`** with this block:
-
-````markdown
 # Executive Summary — Credit Risk Analysis & Portfolio Review
 ## FinTrust Lending Co. | Portfolio Risk Review
 ### Prepared by: Telukala Snuhith Reddy, Data Analyst
@@ -109,4 +98,3 @@ To evaluate the trade-offs of proposed tightening measures, the following table 
 ---
 
 *\*Benchmark note: External reference sourced from CareEdge Ratings, NBFC-Microfinance Industry Report, 2025. GNPA (90+ days past due) is a delinquency metric whereas `loan_status` represents a completed binary default outcome; the comparison is directional.*
-````
