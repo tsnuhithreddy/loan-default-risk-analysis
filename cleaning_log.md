@@ -8,7 +8,7 @@
 - **Cleaned Rows:** 32,416
 - **Rows Removed:** 165 duplicate records
 - **Original Columns:** 12
-- **Final Columns:** 13 (includes 1 engineered data-quality indicator)
+- **Final Columns:** 13 (includes 1 engineered data-quality indicator: `emp_length_missing`)
 
 ---
 
@@ -35,7 +35,7 @@ Exact duplicate records were identified and removed from the raw dataset.
 
 ### 3. Employment-Length Validation and Capping
 
-`person_emp_length` was validated against borrower age. A borrower cannot have worked more years than their age minus the legal minimum working age (16 years).
+`person_emp_length` was validated against borrower age. For data-quality validation, the maximum plausible employment length was defined as `person_age - 16`, assuming employment cannot begin before age 16.
 
 The maximum possible employment length was calculated as:
 
@@ -49,20 +49,21 @@ The maximum possible employment length was calculated as:
 
 Missing values in `person_emp_length` were tracked before imputation to preserve the distinction between known zero employment and unrecorded employment information.
 
-- **Raw dataset missingness:** 895 records (2.75% of raw records)
-- **Cleaned dataset missingness:** 887 records (2.74% of post-deduplication records)
-- **Action:** Created an indicator column `emp_length_missing` (`1` if originally missing, `0` if recorded).
+- **Raw dataset missingness:** 895 records (2.75% of 32,581 raw rows)
+- **After duplicate removal:** 887 records (2.74% of 32,416 retained rows)
+- **Action:** Created a missingness indicator column `emp_length_missing` (`1` if `person_emp_length` was originally missing, `0` otherwise).
 - **Imputation:** All missing `person_emp_length` values were filled with `0.0`.
+- **Final cleaned dataset missingness:** 0
 - **Note:** This variable indicates unrecorded employment information at the time of application; it should not be assumed to represent confirmed unemployment in all instances.
 
 ---
 
 ### 5. Missing Interest Rate Imputation
 
-Missing values in `loan_int_rate` were imputed using group-level medians segmented by `loan_grade` to reflect the risk-based pricing tier of each loan.
+Missing values in `loan_int_rate` were imputed using the median interest rate within each `loan_grade` group, preserving the observed grade-level pricing structure.
 
-- **Raw dataset missingness:** 3,116 records (9.56% of raw records)
-- **Cleaned dataset missingness:** 3,095 records (9.55% of post-deduplication records)
+- **Raw dataset missingness:** 3,116 records (9.56% of 32,581 raw rows)
+- **After duplicate removal:** 3,095 records (9.55% of 32,416 retained rows)
 - **Imputation medians by grade:**
   - **Grade A:** 7.49%
   - **Grade B:** 10.99%
@@ -71,11 +72,11 @@ Missing values in `loan_int_rate` were imputed using group-level medians segment
   - **Grade E:** 16.82%
   - **Grade F:** 18.535%
   - **Grade G:** 20.16%
-- **Remaining nulls:** 0
+- **Final cleaned dataset missingness:** 0
 
 ---
 
-### 6. Extreme Income Outlier Capping
+### 6. High Income Capping (IQR Upper Fence)
 
 `person_income` exhibited extreme positive skewness with maximum reported income reaching $6,000,000. Values above the Interquartile Range (IQR) upper fence were capped to reduce outlier leverage on statistical metrics.
 
@@ -85,6 +86,7 @@ Missing values in `loan_int_rate` were imputed using group-level medians segment
 - **Upper Fence:** Q3 + (1.5 × IQR) = $140,232
 - **Rows capped (income > $140,232):** 1,478 records
 - **Cleaned income range:** $4,000 – $140,232
+- **Methodology Note:** `loan_percent_income` represents the source-provided loan-to-income (LTI) ratio and is preserved as recorded in the source dataset rather than recomputed post-capping.
 
 ---
 
@@ -102,12 +104,13 @@ Categorical string columns were standardized by removing leading/trailing whites
 
 ### 8. Final Post-Cleaning Quality Validation
 
-A final automated validation block was executed to guarantee data integrity:
+Automated validation checks were executed for nulls, duplicates, age bounds, employment length, engineered flag validity, and dataset dimensions:
 
 - **Missing values:** 0 across all 13 columns.
 - **Duplicate records:** 0 duplicate rows remaining.
-- **Age boundaries:** All values strictly within [20, 80].
+- **Age boundaries:** All values within the validated range 20–80 years.
 - **Employment length:** All values >= 0.0 and <= (person_age - 16).
 - **Income boundaries:** All values <= $140,232.
-- **Engineered Flag:** `emp_length_missing` strictly binary (`0` or `1`).
+- **Engineered Flag:** `emp_length_missing` contains only `0` and `1`.
 - **Final dataset dimensions:** 32,416 rows × 13 columns.
+check this
