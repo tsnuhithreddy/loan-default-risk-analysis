@@ -44,7 +44,7 @@ Query 3 identifies three loan purposes with observed default rates above the por
 
 ### Finding 4 — Loan-to-Income Ratio Shows a Sharp Risk Escalation Above 35%
 
-Queries 8 and 27 evaluate borrower leverage using `loan_percent_income`, expressed as the proportion of annual income represented by the loan amount:
+Query 8 provides the four-tier borrower leverage breakdown, while Query 27 examines the interaction between leverage tiers and loan grade. The analysis uses `loan_percent_income`, expressed as the proportion of annual income represented by the loan amount:
 
 * **Low (<20%):** 13.43% default rate (2,868 defaults / 21,363 loans)
 * **Medium (20–34%):** 29.05% default rate (2,508 defaults / 8,634 loans)
@@ -119,15 +119,15 @@ Query 13 compares observed portfolio performance against the simulated `risk_sco
 * **High Risk:** Grades E and F
 * **Critical Risk:** Grade G
 
-The observed default rates for **Grade C (20.75%)** and **Grade D (59.06%)** indicate that the middle-grade segment contains substantially different risk levels, with Grade D exhibiting a particularly large increase in observed defaults relative to Grade C.
+The observed grade-level default rates show several deviations from the simulated risk-scoring ranges. Grade C (20.75%) is slightly above the Medium Risk upper benchmark of 20%, while Grade D (59.06%) substantially exceeds that benchmark. Grades E (64.49%) and F (70.54%) also exceed the High Risk upper benchmark of 40%, whereas Grade G (98.44%) falls within the Critical Risk reference range of 40–100%. Grade A (9.96%) also exceeds the Low Risk upper benchmark of 8%, while Grade B (16.32%) remains within the Low Risk range.
 
-**Business Implication:** The substantial divergence between Grades C and D suggests that treating both grades as a single medium-risk category may conceal meaningful risk heterogeneity. The reference scoring framework should therefore be recalibrated or further segmented using observed portfolio performance before being used for operational risk decisions.
+**Business Implication:** The observed portfolio does not align cleanly with several ranges in the simulated reference matrix. The particularly large difference between Grades C and D demonstrates meaningful heterogeneity within the Medium Risk grouping, while the deviations observed across Grades A, C, D, E, and F indicate that the reference framework should be treated as an analytical benchmark rather than an empirically validated risk calibration. It should be recalibrated against observed portfolio performance before being considered for operational risk decisions.
 
 ---
 
 ### Finding 10 — Income Quartiles Show a Strong Inverse Association with Default Rate
 
-Query 23 uses SQL `NTILE(4)` to divide borrowers into four approximately equal-sized income groups:
+Query 23 uses SQL `NTILE(4)` to divide the 32,416 cleaned records into four equal-sized income groups of 8,104 records each, ordered by `person_income`. Because tied income values can be assigned across adjacent quartiles, the exact boundary values and default counts should be interpreted as SQL-output-dependent rather than as fixed statistical quartile cut points.
 
 * **Quartile 1 ($4,000–$38,500):** 39.75% default rate (n = 8,104; 3,221 defaults)
 * **Quartile 2 ($38,556–$55,000):** 21.41% default rate (n = 8,104; 1,735 defaults)
