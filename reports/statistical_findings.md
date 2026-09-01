@@ -2,7 +2,7 @@
 
 **Analyst:** Telukala Snuhith Reddy  
 **Dataset:** 32,416 historical loan records (`data/cleaned/credit_risk_cleaned.csv`)  
-**Methodology Note:** This report summarizes the formal hypothesis tests conducted to evaluate whether observed exploratory patterns represent statistically significant in-sample associations rather than random sampling fluctuations.
+**Methodology Note:** This report summarizes formal hypothesis tests used to assess whether selected differences and associations observed in the historical portfolio are statistically distinguishable from the null hypotheses under the assumptions of the respective tests. Results are in-sample and should not be interpreted as evidence of causality or validated out-of-sample predictive performance.
 
 ---
 
@@ -14,7 +14,7 @@ A Pearson Chi-Square test of independence was performed to assess the relationsh
 - **Degrees of Freedom ($df$):** 6
 - **P-Value:** $< 0.001$
 
-**Interpretation:** Default status is statistically dependent on loan grade at the $\alpha = 0.001$ level. This confirms that the observed monotonic escalation in default rates from Grade A (9.96%) through Grade G (98.44%) represents a statistically significant association within this dataset.
+**Interpretation:** The chi-square test provides strong evidence that default status is associated with loan grade at the $\alpha = 0.001$ level. The descriptive results also show a monotonic increase in observed default rates from Grade A (9.96%) through Grade G (98.44%). The chi-square test establishes statistically significant association, but does not by itself test the monotonic trend.
 
 ---
 
@@ -58,7 +58,7 @@ A two-proportion test was conducted evaluating the composite analytical risk fla
 
 - **Gross Principal Exposure from Defaulted Loans:** **$76,968,675**
 - **Estimated First-Year Simple Interest on Non-Defaulted Loans:** **$25,003,819**
-- **Net Portfolio Balance (First-Year View):** **-$51,964,856**
+- **Simplified Exposure–Interest Difference (One-Year Simple-Interest Proxy):** **-$51,964,856**
 
 *Note: In the absence of loan-tenure fields, interest reflects a one-year simple interest calculation on non-defaulted loans, providing a conservative annualized baseline comparison against unrecovered defaulted principal.*
 
@@ -72,4 +72,4 @@ A two-proportion test was conducted evaluating the composite analytical risk fla
 | **Two-Proportion Z-Test:** LTI $>35\%$ vs. $\le 35\%$ | $Z = 58.41$ ($3.94\times$ Risk Ratio) | $< 0.001$ | Statistically Significant |
 | **Two-Proportion Z-Test:** High Risk Flag vs. Normal | $Z = 52.69$ ($2.89\times$ Risk Ratio) | $< 0.001$ | Statistically Significant |
 
-All three core risk indicators demonstrate statistically significant in-sample associations with loan default outcomes within the FinTrust dataset.
+All three tested relationships demonstrate statistically significant in-sample associations with observed loan default outcomes within the FinTrust dataset. These results establish historical association, not causal effects or validated out-of-sample predictive performance.
