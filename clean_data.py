@@ -95,9 +95,17 @@ def cap_income_outliers(df: pd.DataFrame) -> pd.DataFrame:
 
     n_outliers = (df["person_income"] > upper_bound).sum()
     df["person_income"] = df["person_income"].clip(upper=upper_bound)
+
+    # Recalculate loan-to-income ratio after capping income so the derived
+    # metric remains consistent with the cleaned income and loan amount.
+    df["loan_percent_income"] = (
+        df["loan_amnt"] / df["person_income"]
+    ).round(2)
+
     assert df["person_income"].max() <= upper_bound, "Income cap failed"
     print(f"Capped {n_outliers} income values above ${upper_bound:,.0f}")
     return df
+
 
 
 def standardize_categoricals(df: pd.DataFrame, cols=CATEGORICAL_COLS) -> pd.DataFrame:
