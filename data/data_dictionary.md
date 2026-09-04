@@ -18,7 +18,7 @@ This document describes the fields in the FinTrust credit-risk dataset, includin
 | `loan_amnt`                  | int   |           0.00% | 500–35,000                    | 500–35,000                 | No cleaning required                                                               | Loan characteristic                                 |
 | `loan_int_rate`              | float |           9.56% | 5.42–23.22                    | 5.42–23.22                 | Missing values imputed using median rate within `loan_grade`                       | Loan characteristic                                 |
 | `loan_status`                | int   |           0.00% | 0 / 1                         | 0 / 1                      | No cleaning required                                                               | Target variable: 1 = default, 0 = non-default       |
-| `loan_percent_income`        | float |           0.00% | 0.00–0.83                     | 0.00–0.83                  | Source-provided value preserved as recorded                                        | Loan-to-Income (LTI) affordability / risk indicator |
+| `loan_percent_income`        | float |           0.00% | 0.00–0.83                     | 0.00–0.83                  | Recalculated after `person_income` capping as `loan_amnt / person_income`, rounded to two decimal places | Loan-to-Income (LTI) affordability / risk indicator |
 | `cb_person_default_on_file`  | str   |           0.00% | Y / N                         | Y / N                      | Whitespace stripped and values uppercased                                          | Prior credit-default indicator                      |
 | `cb_person_cred_hist_length` | int   |           0.00% | 2–30                          | 2–30                       | No cleaning required                                                               | Credit-history characteristic                       |
 
@@ -66,7 +66,7 @@ The following variables are constructed during SQL and Python exploratory data a
 | ----------------------- | ------------------------------------ | --------------------------------------------------------------------------------- |
 | `lti_risk` / `lti_tier` | Loan-to-Income (LTI) Ratio risk tier | Low (<20%), Medium (20–34%), High (35–49%), Critical (≥50%)                       |
 | `income_band`           | Borrower income classification       | Low (<$30k), Medium ($30k–$60k), High ($60k–$100k), Very High (≥$100k)            |
-| `age_group`             | Borrower age classification          | Young (<25), Early Career (25–35), Mid Career (36–50), Senior (>50)               |
+| `age_group`             | Borrower age classification          | Young (<25), Early Career (25–35), Mid Career (36–49), Senior (≥50)               |
 | `risk_flag`             | Composite Early Warning Risk Flag    | `High Risk` if Grade ∈ {E,F,G} OR LTI > 40% OR Prior Default = 'Y', else `Normal` |
 
 ---
