@@ -45,7 +45,7 @@ framework to support better lending decisions.
 | 3 | Debt Consolidation has the highest observed default rate among loan intents | 28.68% default rate | Apply intent-specific affordability and underwriting review |
 | 4 | Loan-to-Income Ratio above 35% is associated with substantially higher observed default | 71.96% vs 18.28%; two-proportion z-test | Use >35% as a candidate enhanced-review threshold |
 | 5 | Grade D represents the largest absolute default exposure | Approximately $23M in defaulted principal | Review exposure concentration and underwriting |
-| 6 | Grades F and G show negative simplified exposure–interest differences under the project's assumptions | Approximately $0.2M estimated interest vs $3.6M defaulted principal exposure | Review pricing, exposure, and approval strategy |
+| 6 | All loan grades show negative simplified exposure–interest differences under the project's assumptions | F and G show the most severe differences relative to their portfolio size | Review pricing, exposure, and approval strategy |
 | 7 | Composite Risk Flag shows strong observed risk separation | 44.5% vs 15.4% default rate | Use as an analytical early-warning indicator pending further validation |
 | 8 | Analytical portfolio position is negative under the project's financial assumptions | Estimated interest: $25.00M vs default exposure: $76.97M | Prioritize risk reduction and portfolio exposure management |
 
