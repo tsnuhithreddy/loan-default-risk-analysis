@@ -86,8 +86,6 @@ Missing values in `loan_int_rate` were imputed using the median interest rate wi
 - **Upper Fence:** Q3 + (1.5 × IQR) = $140,232
 - **Rows capped (income > $140,232):** 1,478 records
 - **Cleaned income range:** $4,000 – $140,232
-* **Methodology Note:** `loan_percent_income` is recalculated after income capping using `loan_amnt / person_income` and rounded to two decimal places so that the derived loan-to-income (LTI) ratio remains consistent with the cleaned income values.
-
 
 ---
 
