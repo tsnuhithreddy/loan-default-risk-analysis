@@ -44,7 +44,7 @@ GROUP BY person_home_ownership
 ORDER BY default_rate DESC;
 
 -- Q5: High volume high risk loan intents
--- Business question: Which loan purposes combine high volume (>5,000 loans) with above-average default risk (>20%)?
+-- Business question: Which loan purposes combine high volume (>5,000 loans) with elevated default risk (>20%)?
 SELECT loan_intent,
        COUNT(*) AS total_loans,
        SUM(loan_status) AS total_defaults,
@@ -85,20 +85,20 @@ FROM credit_risk
 GROUP BY income_band
 ORDER BY default_rate DESC;
 
--- Q8: DTI risk classification
--- Business question: How does default risk escalate across Loan-to-Income (DTI) ratio tiers?
+-- Q8: LTI risk classification
+-- Business question: How does default risk escalate across Loan-to-Income (LTI) ratio tiers?
 SELECT
     CASE 
         WHEN loan_percent_income < 0.20 THEN 'Low'
         WHEN loan_percent_income BETWEEN 0.20 AND 0.34 THEN 'Medium'
         WHEN loan_percent_income BETWEEN 0.35 AND 0.49 THEN 'High'
         ELSE 'Critical'
-    END AS dti_risk,
+    END AS lti_risk,
     COUNT(*) AS total_loans,
     SUM(loan_status) AS total_defaults,
     ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
 FROM credit_risk
-GROUP BY dti_risk
+GROUP BY lti_risk
 ORDER BY default_rate DESC;
 
 -- Q9: Employment stability classification
@@ -163,8 +163,8 @@ JOIN credit_risk c
 GROUP BY l.grade, l.typical_rate_min, l.typical_rate_max
 ORDER BY l.grade;
 
--- Q13: Risk tier assignment
--- Business question: How do observed default rates compare to expected ranges in the risk scoring matrix?
+-- Q13: Grade-based risk tier comparison
+-- Business question: How do observed grade-level default rates compare with the expected ranges in the simulated risk scoring matrix?
 SELECT r.risk_tier,
        r.tier_description,
        COUNT(*) AS total_loans,
@@ -234,21 +234,21 @@ SELECT loan_grade,
        RANK() OVER (ORDER BY default_rate DESC) AS ranked 
 FROM grade_stats;
 
--- Q17: CTE — above average default segments
--- Business question: Which loan intents exceed FinTrust's overall average portfolio default rate?
+-- Q17: CTE — above portfolio-average default segments
+-- Business question: Which loan intents have observed default rates above FinTrust's overall portfolio default rate?
 WITH avg_default_rate AS (
     SELECT loan_intent,
-           ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
+           AVG(loan_status) * 100.0 AS default_rate
     FROM credit_risk
     GROUP BY loan_intent
 ),
 overall_avg AS (
-    SELECT ROUND(AVG(loan_status) * 100.0, 2) AS overall_default
+    SELECT AVG(loan_status) * 100.0 AS overall_default
     FROM credit_risk
 )
 SELECT a.loan_intent,
-       a.default_rate,
-       o.overall_default
+       ROUND(a.default_rate, 2) AS default_rate,
+       ROUND(o.overall_default, 2) AS overall_default
 FROM avg_default_rate a
 CROSS JOIN overall_avg o
 WHERE a.default_rate > o.overall_default;
@@ -265,7 +265,7 @@ WITH grade_details AS (
 SELECT loan_grade,
        total_loan_amount,
        total_defaulted_amount,
-       ROUND(total_defaulted_amount * 100.0 / SUM(total_defaulted_amount) OVER (), 2) AS percent_of_total_portfolio,
+       ROUND(total_defaulted_amount * 100.0 / SUM(total_defaulted_amount) OVER (), 2) AS percent_of_total_default_exposure,
        SUM(total_defaulted_amount) OVER (ORDER BY total_defaulted_amount DESC) AS cumulative_exposure
 FROM grade_details
 ORDER BY total_defaulted_amount DESC;
@@ -386,13 +386,16 @@ WHERE intent_rank <= 3
 ORDER BY person_home_ownership, intent_rank;
 
 -- Q25: Window function — grade average vs individual loan outcome
--- Business question: What is the deviation between individual loan outcomes and grade-level average default rates?
+-- Business question: How does each individual loan outcome compare with the observed average default rate of its loan grade?
 SELECT loan_grade,
        loan_amnt,
        loan_status,
        loan_int_rate,
-       ROUND(AVG(loan_status) OVER (PARTITION BY loan_grade), 2) AS avg_default_rate,
-       ROUND(loan_status - AVG(loan_status) OVER (PARTITION BY loan_grade), 2) AS deviation
+       ROUND(AVG(loan_status) OVER (PARTITION BY loan_grade) * 100.0, 2) AS avg_default_rate_pct,
+       ROUND(
+           (loan_status - AVG(loan_status) OVER (PARTITION BY loan_grade)) * 100.0,
+           2
+       ) AS deviation_percentage_points
 FROM credit_risk
 LIMIT 20;
 
@@ -436,20 +439,20 @@ JOIN risk_scoring_matrix r
     ON g.risk_tier = r.risk_tier
 ORDER BY g.default_percentage DESC;
 
--- Q27: Grade x DTI interaction
--- Business question: How does default rate trend across DTI tiers within each loan grade?
+-- Q27: Grade x LTI interaction
+-- Business question: How does default rate trend across LTI tiers within each loan grade?
 SELECT loan_grade,
        CASE
-           WHEN loan_percent_income < 0.20 THEN 'Low DTI'
-           WHEN loan_percent_income < 0.35 THEN 'Medium DTI'
-           ELSE 'High DTI (35%+)'
-       END AS dti_tier,
+           WHEN loan_percent_income < 0.20 THEN 'Low LTI'
+           WHEN loan_percent_income < 0.35 THEN 'Medium LTI'
+           ELSE 'High LTI (35%+)'
+       END AS lti_tier,
        COUNT(*) AS total_loans,
        ROUND(AVG(loan_status) * 100.0, 2) AS default_rate
 FROM credit_risk
-GROUP BY loan_grade, dti_tier
+GROUP BY loan_grade, lti_tier
 HAVING COUNT(*) >= 30
-ORDER BY loan_grade, dti_tier;
+ORDER BY loan_grade, lti_tier;
 
 -- Q28: Pipeline validation checksum — expect 32416 rows, 21.87%, $310,994,100, 7 grades
 -- Business question: Does the loaded SQL database reconcile exactly with the validated dataset?
