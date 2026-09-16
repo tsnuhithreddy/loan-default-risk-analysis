@@ -68,7 +68,7 @@ While Grade G has the highest percentage default rate (98.44%), **Grade D repres
 
 ---
 
-### Finding 8 — Grades E, F, and G Show Negative First-Year Net Positions
+### Finding 8 — All Loan Grades Show Negative Exposure–Interest Differences
 
 Comparing estimated first-year simple interest revenue from non-defaulted loans against defaulted principal exposure reveals negative net positions across higher-risk tiers:
 - **Grade E:** -$7.04M net position ($7.827M defaulted principal exposure vs. $0.785M estimated first-year interest; 64.49% default rate)
