@@ -6,6 +6,24 @@
 
 ---
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power_BI-F2C811?style=flat&logo=powerbi&logoColor=black)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white)
+
+> **TL;DR:** Analyzed 32,416 loan records (21.87% default rate). Borrowers with Loan-to-Income above 35% had a **3.94× higher observed default rate** than borrowers below the threshold; a composite risk flag showed **44.5% vs 15.4%** default rates for high-risk vs normal borrowers (statistically significant via a two-proportion z-test). Full findings ↓ [Key Findings](#key-findings) · [Dashboard](#dashboard) · [Business Recommendations](#business-recommendations)
+
+### 📑 Contents
+- [The Business Problem](#the-business-problem)
+- [Key Findings](#key-findings)
+- [Statistical Validation](#statistical-validation)
+- [Dashboard](#dashboard)
+- [Business Recommendations](#business-recommendations)
+- [Limitations of This Analysis](#limitations-of-this-analysis)
+- [Tools Used](#tools-used)
+- [How to Reproduce](#how-to-reproduce)
+- [About](#about)
+
 ## The Business Problem
 
 The analyzed FinTrust portfolio shows a high observed default rate, with more than 1 in 5 loans recorded as defaults.
@@ -378,6 +396,7 @@ even when those characteristics are not directly used.
 **Analyst:** Telukala Snuhith Reddy  
 **Degree:** B.Tech Computer Science — SR University, Warangal (2023–2027)  
 **Email:** snuhithreddy2005@gmail.com  
+GitHub: [tsnuhithreddy](https://github.com/tsnuhithreddy) · LinkedIn: [Snuhith Reddy](https://www.linkedin.com/in/telukala-snuhith-reddy/)
 
 
 ---
